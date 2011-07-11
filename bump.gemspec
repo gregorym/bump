@@ -1,13 +1,13 @@
 Gem::Specification.new do |s|
   s.name = "bump"
-  s.version = "0.0.1"
+  s.version = "0.1.0"
   s.author = "Gregory Marcilhacy"
   s.email = "g.marcilhacy@gmail.com"
   s.homepage = "http://github.com/gregorymp/bump"
   s.summary = "Bump your gem version file"
 
   s.files = %w(
-    readme.textile
+    README.textile
     bump.gemspec
     bin/bump
     lib/bump.rb
