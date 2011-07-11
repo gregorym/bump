@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../lib/bump'
+
+bump = Bump::Bump.new(ARGV)
+bump.run
