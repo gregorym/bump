@@ -3,6 +3,7 @@ module Bump
   class Bump
     
     BUMPS = %w(major minor tiny)
+    VERSION_REGEX = /version\s*=\s*["|'](\d.\d.\d)["|']/
 
     class InvalidBumpError < StandardError; end
     class UnfoundVersionError < StandardError; end
@@ -42,9 +43,12 @@ module Bump
     private
 
     def find_current_version(file)
-      match = File.read(file).match /version\s*=\s*"(\d.\d.\d)"/
-      raise UnfoundVersionError if match.blank?
-      match[1]
+      match = File.read(file).match VERSION_REGEX
+      if match.nil?
+        raise UnfoundVersionError
+      else
+        match[1]
+      end
     end
 
     def find_gemspec_file
@@ -55,14 +59,14 @@ module Bump
     end
 
     def find_next_version(current_version)
-      match = current_version.match(/(\d).(\d).(\d)/)
+      match = current_version.match /(\d).(\d).(\d)/
       case @bump
         when "major"
-          "#{match[1].to_i + 1}.0.0"; puts
+          "#{match[1].to_i + 1}.0.0"
         when "minor"
-          "#{match[1]}.#{match[2].to_i + 1}.0"; puts
+          "#{match[1]}.#{match[2].to_i + 1}.0"
         when "tiny"
-          "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"; puts
+          "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
       end
     end 
 
