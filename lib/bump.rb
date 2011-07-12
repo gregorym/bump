@@ -17,9 +17,9 @@ module Bump
         @bump = bump
 
         rescue InvalidBumpError
-          print "Invalid bump. Choose between #{BUMPS.join(',')}."
+          display_message "Invalid bump. Choose between #{BUMPS.join(',')}."
         rescue Exception
-          print "Something wrong happened"
+          display_message "Something wrong happened"
       end
     end
 
@@ -29,14 +29,14 @@ module Bump
         current_version = find_current_version(gemspec)
         next_version = find_next_version(current_version)
         system(%(ruby -i -pe "gsub(/#{current_version}/, '#{next_version}')" #{gemspec}))
-        print "Bump version #{current_version} to #{next_version}"
+        display_message "Bump version #{current_version} to #{next_version}"
 
         rescue UnfoundVersionError
-          print "Unable to find your gem version"
+          display_message "Unable to find your gem version"
         rescue UnfoundGemspecError
-          print "Unable to find gemspec file"
+          display_message "Unable to find gemspec file"
         rescue TooManyGemspecsFoundError
-          print "More than one gemspec file"
+          display_message "More than one gemspec file"
       end   
     end
 
@@ -69,6 +69,10 @@ module Bump
           "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
       end
     end 
+
+    def display_message(message)
+      print(message); puts;
+    end
 
   end
 
