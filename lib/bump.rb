@@ -3,6 +3,7 @@ module Bump
   class Bump
     
     BUMPS = %w(major minor tiny)
+    OPTIONS = BUMPS | ["current"]
     VERSION_REGEX = /version\s*=\s*["|'](\d.\d.\d)["|']/
 
     class InvalidOptionError < StandardError; end
@@ -16,28 +17,44 @@ module Bump
 
     def run
       begin
-        raise InvalidBumpError unless BUMPS.include?(@bump)
+        raise InvalidOptionError unless OPTIONS.include?(@bump)
 
         gemspec = find_gemspec_file
         current_version = find_current_version(gemspec)
-        next_version = find_next_version(current_version)
-        system(%(ruby -i -pe "gsub(/#{current_version}/, '#{next_version}')" #{gemspec}))
-        display_message "Bump version #{current_version} to #{next_version}"
-
-        rescue InvalidBumpError
-          display_message "Invalid bump. Choose between #{BUMPS.join(',')}."
+        
+        case @bump
+          when "major", "minor", "tiny"
+            bump(current_version, gemspec)
+          when "current"
+            current(current_version)
+          else
+            raise Exception
+        end
+        
+        rescue InvalidOptionError
+          puts "Invalid option. Choose between #{OPTIONS.join(',')}."
         rescue UnfoundVersionError
-          display_message "Unable to find your gem version"
+          puts "Unable to find your gem version"
         rescue UnfoundGemspecError
-          display_message "Unable to find gemspec file"
+          puts "Unable to find gemspec file"
         rescue TooManyGemspecsFoundError
-          display_message "More than one gemspec file"
+          puts "More than one gemspec file"
         rescue Exception => e
-          display_message "Something wrong happened: #{e.message}"
+          puts "Something wrong happened: #{e.message}"
       end   
     end
 
     private
+
+    def bump(current_version, gemspec)
+      next_version = find_next_version(current_version)
+      system(%(ruby -i -pe "gsub(/#{current_version}/, '#{next_version}')" #{gemspec}))
+      puts "Bump version #{current_version} to #{next_version}"
+    end
+
+    def current(current_version)
+      puts "Current version: #{current_version}"
+    end
 
     def find_current_version(file)
       match = File.read(file).match VERSION_REGEX
@@ -66,10 +83,6 @@ module Bump
           "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
       end
     end 
-
-    def display_message(message)
-      print(message); puts;
-    end
 
   end
 
