@@ -5,7 +5,7 @@ module Bump
     BUMPS = %w(major minor tiny)
     VERSION_REGEX = /version\s*=\s*["|'](\d.\d.\d)["|']/
 
-    class InvalidBumpError < StandardError; end
+    class InvalidOptionError < StandardError; end
     class UnfoundVersionError < StandardError; end
     class TooManyGemspecsFoundError < StandardError; end
     class UnfoundGemspecError < StandardError; end
