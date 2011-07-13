@@ -11,32 +11,29 @@ module Bump
     class UnfoundGemspecError < StandardError; end
 
     def initialize(bump)
-      begin
-        bump = bump.is_a?(Array) ? bump.first : bump
-        raise InvalidBumpError unless BUMPS.include?(bump)
-        @bump = bump
-
-        rescue InvalidBumpError
-          display_message "Invalid bump. Choose between #{BUMPS.join(',')}."
-        rescue Exception
-          display_message "Something wrong happened"
-      end
+      @bump = bump.is_a?(Array) ? bump.first : bump
     end
 
     def run
       begin
+        raise InvalidBumpError unless BUMPS.include?(@bump)
+
         gemspec = find_gemspec_file
         current_version = find_current_version(gemspec)
         next_version = find_next_version(current_version)
         system(%(ruby -i -pe "gsub(/#{current_version}/, '#{next_version}')" #{gemspec}))
         display_message "Bump version #{current_version} to #{next_version}"
 
+        rescue InvalidBumpError
+          display_message "Invalid bump. Choose between #{BUMPS.join(',')}."
         rescue UnfoundVersionError
           display_message "Unable to find your gem version"
         rescue UnfoundGemspecError
           display_message "Unable to find gemspec file"
         rescue TooManyGemspecsFoundError
           display_message "More than one gemspec file"
+        rescue Exception => e
+          display_message "Something wrong happened: #{e.message}"
       end   
     end
 
