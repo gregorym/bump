@@ -1,15 +1,15 @@
 module Bump
 
+  class InvalidOptionError < StandardError; end
+  class UnfoundVersionError < StandardError; end
+  class TooManyGemspecsFoundError < StandardError; end
+  class UnfoundGemspecError < StandardError; end
+
   class Bump
     
     BUMPS = %w(major minor tiny)
     OPTIONS = BUMPS | ["current"]
     VERSION_REGEX = /version\s*=\s*["|'](\d.\d.\d)["|']/
-
-    class InvalidOptionError < StandardError; end
-    class UnfoundVersionError < StandardError; end
-    class TooManyGemspecsFoundError < StandardError; end
-    class UnfoundGemspecError < StandardError; end
 
     def initialize(bump)
       @bump = bump.is_a?(Array) ? bump.first : bump
