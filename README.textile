@@ -18,6 +18,4 @@ Bump version 0.1.2 to 0.1.3
 h1. Todo
 
 * Handle options properly
-* I really need to write tests!
-* Some code can be refactored
 
