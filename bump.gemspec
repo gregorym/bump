@@ -1,26 +1,13 @@
-Gem::Specification.new do |s|
-  s.name = "bump"
+Gem::Specification.new "bump" do |s|
   s.version = "0.1.3"
   s.author = "Gregory Marcilhacy"
   s.email = "g.marcilhacy@gmail.com"
   s.homepage = "http://github.com/gregorymp/bump"
   s.summary = "Bump your gem version file"
-
-  s.files = %w(
-    README.textile
-    bump.gemspec
-    bin/bump
-    lib/bump.rb
-  )
-  
-  s.test_files = %w(
-    test/bump_spec.rb
-    test/fixture/fixture.gemspec
-  )
-  
+  s.files = `git ls-files`.split("\n")
+  s.license = "MIT"
   s.require_path = "lib"
   s.executables = ["bump"]
-
 end
 
 
