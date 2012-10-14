@@ -4,7 +4,7 @@ bc. gem install bump
 
 h1. Usage
 
-Current version of your gem file:
+Current version of your gem:
 
 bc. bump current
 Current version: 0.1.2
@@ -13,7 +13,6 @@ Bump your gemfile (major, minor, patch):
 
 bc. bump patch
 Bump version 0.1.2 to 0.1.3
-
 
 h1. Todo
 

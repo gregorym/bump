@@ -23,15 +23,15 @@ describe Bump do
   it "should fail with multiple gemspecs" do
     write_gemspec
     write("xxxx.gemspec", "xxx")
-    bump("", :fail => true).should include "More than one gemspec file"
+    bump("current", :fail => true).should include "More than one gemspec file"
   end
 
   it "should fail if version is weird" do
-    write_gemspec("a.b.c")
-    bump("", :fail => true).should include "Unable to find your gem version"
+    write_gemspec('"a.b.c"')
+    bump("current", :fail => true).should include "Unable to find your gem version"
   end
 
-  context ".version in gemspect" do
+  context ".version in gemspec" do
     before do
       write_gemspec
     end
@@ -69,6 +69,43 @@ describe Bump do
     end
   end
 
+  context "VERSION in version.rb" do
+    before do
+      write "lib/foo/version.rb", <<-RUBY.sub(" "*8, "")
+        module Foo
+          VERSION = "1.2.3"
+        end
+      RUBY
+    end
+
+    it "show current" do
+      bump("current").should include("1.2.3")
+      read("lib/foo/version.rb").should include('  VERSION = "1.2.3"')
+    end
+
+    it "should bump VERSION" do
+      bump("minor").should include("1.3.0")
+      read("lib/foo/version.rb").should include('  VERSION = "1.3.0"')
+    end
+
+    it "should bump Version" do
+      write "lib/foo/version.rb", <<-RUBY.sub(" "*8, "")
+        module Foo
+          Version = "1.2.3"
+        end
+      RUBY
+      bump("minor").should include("1.3.0")
+      read("lib/foo/version.rb").should include('  Version = "1.3.0"')
+    end
+
+    it "should bump if a gemspec exists and leave it alone" do
+      write_gemspec "Foo::VERSION"
+      bump("minor").should include("1.3.0")
+      read("lib/foo/version.rb").should include('  VERSION = "1.3.0"')
+      read(gemspec).should include('version = Foo::VERSION')
+    end
+  end
+
   private
 
   def write(file, content)
@@ -91,10 +128,10 @@ describe Bump do
     run "#{File.expand_path("../../bin/bump", __FILE__)} #{command}", options
   end
 
-  def write_gemspec(version = "4.2.3")
+  def write_gemspec(version = '"4.2.3"')
     write gemspec, <<-RUBY.sub(" "*6, "")
       Gem::Specification.new do |s|
-        s.version = "#{version}"
+        s.version = #{version}
       end
     RUBY
   end
