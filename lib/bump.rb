@@ -29,7 +29,7 @@ module Bump
     rescue UnfoundVersionError
       ["Unable to find your gem version", 1]
     rescue UnfoundVersionFileError
-      ["Unable to find gemspec file", 1]
+      ["Unable to find a file with the gem version", 1]
     rescue TooManyVersionFilesError
       ["More than one gemspec file", 1]
     rescue Exception => e
@@ -55,25 +55,32 @@ module Bump
     end
 
     def current_version
-      version, file = version_from_version_rb || version_from_gemspec || raise(UnfoundVersionFileError)
+      version, file = (
+        version_from_version_rb ||
+        version_from_gemspec ||
+        version_from_version ||
+        raise(UnfoundVersionFileError)
+      )
       raise UnfoundVersionError unless version
       [version, file]
     end
 
     def version_from_version_rb
       return unless file = find_version_file("*/**/version.rb")
-      [
-        File.read(file)[VERSION_REGEX],
-        file
-      ]
+      return unless version = File.read(file)[VERSION_REGEX]
+      [version, file]
     end
 
     def version_from_gemspec
       return unless file = find_version_file("*.gemspec")
-      [
-        File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1],
-        file
-      ]
+      return unless version = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
+      [version, file]
+    end
+
+    def version_from_version
+      return unless file = find_version_file("VERSION")
+      return unless version = File.read(file)[VERSION_REGEX]
+      [version, file]
     end
 
     def find_version_file(pattern)
