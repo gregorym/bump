@@ -18,11 +18,9 @@ module Bump
     end
 
     def run
-      @version = find_current_version
-
       case @bump
       when "major", "minor", "tiny"
-        bump
+        bump(@bump)
       when "current"
         current
       else
@@ -42,22 +40,23 @@ module Bump
 
     private
 
-    def bump
-      @next_version = find_next_version
-      system(%(ruby -i -pe "gsub(/#{@version}/, '#{@next_version}')" #{gemspec_path}))
-      ["Bump version #{@version} to #{@next_version}", 0]
+    def bump(part)
+      current = current_version
+      next_version = next_version(current, part)
+      system(%(ruby -i -pe "gsub(/#{current}/, '#{next_version}')" #{gemspec_path}))
+      ["Bump version #{current} to #{next_version}", 0]
     end
 
     def current
-      ["Current version: #{@version}", 0]
+      ["Current version: #{current_version}", 0]
     end
 
-    def find_current_version
+    def current_version
       match = File.read(gemspec_path).match VERSION_REGEX
-      if match.nil?
-        raise UnfoundVersionError
-      else
+      if match
         match[1]
+      else
+        raise UnfoundVersionError
       end
     end
 
@@ -70,15 +69,17 @@ module Bump
       end
     end
 
-    def find_next_version
-      match = @version.match /(\d+)\.(\d+)\.(\d+)/
-      case @bump
+    def next_version(current, part)
+      match = current.match /(\d+)\.(\d+)\.(\d+)/
+      case part
       when "major"
         "#{match[1].to_i + 1}.0.0"
       when "minor"
         "#{match[1]}.#{match[2].to_i + 1}.0"
       when "tiny"
         "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
+      else
+        raise "unknown part #{part.inspect}"
       end
     end
 
