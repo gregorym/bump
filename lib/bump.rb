@@ -5,20 +5,14 @@ module Bump
   class UnfoundVersionFileError < StandardError; end
 
   class Bump
-    attr_accessor :bump
-    
     BUMPS = %w(major minor patch)
     OPTIONS = BUMPS | ["current"]
     VERSION_REGEX = /(\d+\.\d+\.\d+)/
 
-    def initialize(bump)
-      @bump = bump.is_a?(Array) ? bump.first : bump
-    end
-
-    def run
-      case @bump
+    def self.run(bump, options)
+      case bump
       when "major", "minor", "patch"
-        bump(@bump)
+        bump(bump, options)
       when "current"
         current
       else
@@ -38,23 +32,29 @@ module Bump
 
     private
 
-    def bump(part)
+    def self.bump(part, options)
       current, file = current_version
       next_version = next_version(current, part)
       replace(file, current, next_version)
+      commit(next_version, file) if options[:commit]
       ["Bump version #{current} to #{next_version}", 0]
     end
 
-    def replace(file, old, new)
+    def self.commit(version, file)
+      return unless File.directory?(".git")
+      raise unless system("git add #{file} && git commit -m 'v#{version}'")
+    end
+
+    def self.replace(file, old, new)
       content = File.read(file)
       File.open(file, "w"){|f| f.write(content.gsub(old, new)) }
     end
 
-    def current
+    def self.current
       ["Current version: #{current_version.first}", 0]
     end
 
-    def current_version
+    def self.current_version
       version, file = (
         version_from_version_rb ||
         version_from_gemspec ||
@@ -65,25 +65,25 @@ module Bump
       [version, file]
     end
 
-    def version_from_version_rb
+    def self.version_from_version_rb
       return unless file = find_version_file("*/**/version.rb")
       return unless version = File.read(file)[VERSION_REGEX]
       [version, file]
     end
 
-    def version_from_gemspec
+    def self.version_from_gemspec
       return unless file = find_version_file("*.gemspec")
       return unless version = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
       [version, file]
     end
 
-    def version_from_version
+    def self.version_from_version
       return unless file = find_version_file("VERSION")
       return unless version = File.read(file)[VERSION_REGEX]
       [version, file]
     end
 
-    def find_version_file(pattern)
+    def self.find_version_file(pattern)
       files = Dir.glob(pattern)
       case files.size
       when 0 then nil
@@ -93,7 +93,7 @@ module Bump
       end
     end
 
-    def next_version(current, part)
+    def self.next_version(current, part)
       match = current.match /(\d+)\.(\d+)\.(\d+)/
       case part
       when "major"
