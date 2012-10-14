@@ -9,9 +9,9 @@ Current version of your gem file:
 bc. bump current
 Current version: 0.1.2
 
-Bump your gemfile (major, minor, tiny):
+Bump your gemfile (major, minor, patch):
 
-bc. bump tiny
+bc. bump patch
 Bump version 0.1.2 to 0.1.3
 
 
