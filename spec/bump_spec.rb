@@ -1,45 +1,101 @@
 require File.dirname(__FILE__) + "/../lib/bump.rb"
 
 describe Bump do
+  let(:gemspec){ "fixture.gemspec" }
 
   around do |example|
-    gemspec = <<-RUBY.sub(" "*6, "")
+    run "rm -rf fixture && mkdir fixture"
+    Dir.chdir "fixture" do
+      example.call
+    end
+    run "rm -rf fixture"
+  end
+
+  it "should fail if it cannot find anything to bump" do
+    bump("current", :fail => true).should include "Unable to find"
+  end
+
+  it "should fail without command" do
+    write_gemspec
+    bump("", :fail => true).should include "Invalid option"
+  end
+
+  it "should fail with multiple gemspecs" do
+    write_gemspec
+    write("xxxx.gemspec", "xxx")
+    bump("", :fail => true).should include "More than one gemspec file"
+  end
+
+  it "should fail if version is weird" do
+    write_gemspec("a.b.c")
+    bump("", :fail => true).should include "Unable to find your gem version"
+  end
+
+  context ".version in gemspect" do
+    before do
+      write_gemspec
+    end
+
+    it "should find current version" do
+      bump("current").should include("4.2.3")
+      read(gemspec).should include('s.version = "4.2.3"')
+    end
+
+    it "should bump tiny" do
+      bump("tiny").should include("4.2.4")
+      read(gemspec).should include('s.version = "4.2.4"')
+    end
+
+    it "should bump minor" do
+      bump("minor").should include("4.3.0")
+      read(gemspec).should include('s.version = "4.3.0"')
+    end
+
+    it "should bump major" do
+      bump("major").should include("5.0.0")
+      read(gemspec).should include('s.version = "5.0.0"')
+    end
+
+    it "should bump more then 10" do
+      bump("tiny").should include("4.2.4")
+      bump("tiny").should include("4.2.5")
+      bump("tiny").should include("4.2.6")
+      bump("tiny").should include("4.2.7")
+      bump("tiny").should include("4.2.8")
+      bump("tiny").should include("4.2.9")
+      bump("tiny").should include("4.2.10")
+      bump("tiny").should include("4.2.11")
+      read(gemspec).should include('s.version = "4.2.11"')
+    end
+  end
+
+  private
+
+  def write(file, content)
+    folder = File.dirname(file)
+    run "mkdir -p #{folder}" unless File.exist?(folder)
+    File.open(file, 'w'){|f| f.write content }
+  end
+
+  def read(file)
+    File.read(file)
+  end
+
+  def run(cmd, options={})
+    result = `#{cmd} 2>&1`
+    raise "FAILED #{cmd} --> #{result}" if $?.success? != !options[:fail]
+    result
+  end
+
+  def bump(command="", options={})
+    run "#{File.expand_path("../../bin/bump", __FILE__)} #{command}", options
+  end
+
+  def write_gemspec(version = "4.2.3")
+    write gemspec, <<-RUBY.sub(" "*6, "")
       Gem::Specification.new do |s|
-        s.version = "1.0.0"
+        s.version = "#{version}"
       end
     RUBY
-    path = File.expand_path("../fixture/fixture.gemspec", __FILE__)
-    File.open(path, 'w') {|f| f.write(gemspec) }
-    example.call
-    File.open(path, 'w') {|f| f.write("") }
   end
-
-  it "should find current version" do
-    bump = Bump::Bump.new("current")
-    bump.gemspec_path = File.dirname(__FILE__) + "/fixture/fixture.gemspec"
-    output = bump.run
-    output.include?("1.0.0").should be_true
-  end
-
-  it "should bump a tiny version" do
-    bump = Bump::Bump.new("tiny")
-    bump.gemspec_path = File.dirname(__FILE__) + "/fixture/fixture.gemspec"
-    output = bump.run
-    output.include?("1.0.1").should be_true
-  end
-  
-  it "should bump a minor version" do
-    bump = Bump::Bump.new("minor")
-    bump.gemspec_path = File.dirname(__FILE__) + "/fixture/fixture.gemspec"
-    output = bump.run
-    output.include?("1.1.0").should be_true
-  end
-  
-  it "should bump a major version" do
-    bump = Bump::Bump.new("major")
-    bump.gemspec_path = File.dirname(__FILE__) + "/fixture/fixture.gemspec"
-    output = bump.run
-    output.include?("2.0.0").should be_true
-  end
-
 end

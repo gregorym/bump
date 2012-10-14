@@ -2,4 +2,6 @@
 require File.dirname(__FILE__) + '/../lib/bump'
 
 bump = Bump::Bump.new(ARGV)
-bump.run
+output, status = bump.run
+puts output
+exit status
