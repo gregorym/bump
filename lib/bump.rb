@@ -1,12 +1,10 @@
 module Bump
-
   class InvalidOptionError < StandardError; end
   class UnfoundVersionError < StandardError; end
   class TooManyVersionFilesError < StandardError; end
   class UnfoundVersionFileError < StandardError; end
 
   class Bump
-    
     attr_accessor :bump
     
     BUMPS = %w(major minor tiny)
@@ -57,23 +55,35 @@ module Bump
     end
 
     def current_version
-      version_files = Dir.glob("*/**/version.rb")
-      gemspecs = Dir.glob("*.gemspec")
-
-      if version_files.any?
-        raise TooManyVersionFilesError if version_files.size > 1
-        file = version_files.first
-        version = File.read(file)[VERSION_REGEX]
-      elsif gemspecs.any?
-        raise TooManyVersionFilesError if gemspecs.size > 1
-        file = gemspecs.first
-        version = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
-      else
-        raise UnfoundVersionFileError
-      end
-
+      version, file = version_from_version_rb || version_from_gemspec || raise(UnfoundVersionFileError)
       raise UnfoundVersionError unless version
       [version, file]
+    end
+
+    def version_from_version_rb
+      return unless file = find_version_file("*/**/version.rb")
+      [
+        File.read(file)[VERSION_REGEX],
+        file
+      ]
+    end
+
+    def version_from_gemspec
+      return unless file = find_version_file("*.gemspec")
+      [
+        File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1],
+        file
+      ]
+    end
+
+    def find_version_file(pattern)
+      files = Dir.glob(pattern)
+      case files.size
+      when 0 then nil
+      when 1 then files.first
+      else
+        raise TooManyVersionFilesError
+      end
     end
 
     def next_version(current, part)
@@ -89,6 +99,5 @@ module Bump
         raise "unknown part #{part.inspect}"
       end
     end
-
   end
 end
