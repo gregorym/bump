@@ -9,7 +9,7 @@ module Bump
     
     attr_accessor :bump, :gemspec_path, :version, :next_version
     
-    BUMPS = %w(major minor tiny)
+    BUMPS = %w(major minor patch)
     OPTIONS = BUMPS | ["current"]
     VERSION_REGEX = /\.version\s*=\s*["'](\d+\.\d+\.\d+)["']/
 
@@ -21,7 +21,7 @@ module Bump
       @version = find_current_version
 
       case @bump
-      when "major", "minor", "tiny"
+      when "major", "minor", "patch"
         bump
       when "current"
         current
@@ -77,7 +77,7 @@ module Bump
         "#{match[1].to_i + 1}.0.0"
       when "minor"
         "#{match[1]}.#{match[2].to_i + 1}.0"
-      when "tiny"
+      when "patch"
         "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
       end
     end
