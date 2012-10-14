@@ -69,6 +69,43 @@ describe Bump do
     end
   end
 
+  context "VERSION in version.rb" do
+    before do
+      write "lib/foo/version.rb", <<-RUBY.sub(" "*8, "")
+        module Foo
+          VERSION = "1.2.3"
+        end
+      RUBY
+    end
+
+    it "show current" do
+      bump("current").should include("1.2.3")
+      read("lib/foo/version.rb").should include('  VERSION = "1.2.3"')
+    end
+
+    it "should bump VERSION" do
+      bump("minor").should include("1.3.0")
+      read("lib/foo/version.rb").should include('  VERSION = "1.3.0"')
+    end
+
+    it "should bump Version" do
+      write "lib/foo/version.rb", <<-RUBY.sub(" "*8, "")
+        module Foo
+          Version = "1.2.3"
+        end
+      RUBY
+      bump("minor").should include("1.3.0")
+      read("lib/foo/version.rb").should include('  Version = "1.3.0"')
+    end
+
+    it "should bump if a gemspec exists and leave it alone" do
+      write_gemspec "Foo::VERSION"
+      bump("minor").should include("1.3.0")
+      read("lib/foo/version.rb").should include('  VERSION = "1.3.0"')
+      read(gemspec).should include('version = Foo::VERSION')
+    end
+  end
+
   private
 
   def write(file, content)

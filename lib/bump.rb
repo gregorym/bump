@@ -2,16 +2,16 @@ module Bump
 
   class InvalidOptionError < StandardError; end
   class UnfoundVersionError < StandardError; end
-  class TooManyGemspecsFoundError < StandardError; end
-  class UnfoundGemspecError < StandardError; end
+  class TooManyVersionFilesError < StandardError; end
+  class UnfoundVersionFileError < StandardError; end
 
   class Bump
     
-    attr_accessor :bump, :gemspec_path, :version, :next_version
+    attr_accessor :bump
     
     BUMPS = %w(major minor tiny)
     OPTIONS = BUMPS | ["current"]
-    VERSION_REGEX = /\.version\s*=\s*["'](\d+\.\d+\.\d+)["']/
+    VERSION_REGEX = /(\d+\.\d+\.\d+)/
 
     def initialize(bump)
       @bump = bump.is_a?(Array) ? bump.first : bump
@@ -30,43 +30,50 @@ module Bump
       ["Invalid option. Choose between #{OPTIONS.join(',')}.", 1]
     rescue UnfoundVersionError
       ["Unable to find your gem version", 1]
-    rescue UnfoundGemspecError
+    rescue UnfoundVersionFileError
       ["Unable to find gemspec file", 1]
-    rescue TooManyGemspecsFoundError
+    rescue TooManyVersionFilesError
       ["More than one gemspec file", 1]
     rescue Exception => e
-      ["Something wrong happened: #{e.message}", 1]
+      ["Something wrong happened: #{e.message}\n#{e.backtrace.join("\n")}", 1]
     end
 
     private
 
     def bump(part)
-      current = current_version
+      current, file = current_version
       next_version = next_version(current, part)
-      system(%(ruby -i -pe "gsub(/#{current}/, '#{next_version}')" #{gemspec_path}))
+      replace(file, current, next_version)
       ["Bump version #{current} to #{next_version}", 0]
     end
 
+    def replace(file, old, new)
+      content = File.read(file)
+      File.open(file, "w"){|f| f.write(content.gsub(old, new)) }
+    end
+
     def current
-      ["Current version: #{current_version}", 0]
+      ["Current version: #{current_version.first}", 0]
     end
 
     def current_version
-      match = File.read(gemspec_path).match VERSION_REGEX
-      if match
-        match[1]
-      else
-        raise UnfoundVersionError
-      end
-    end
+      version_files = Dir.glob("*/**/version.rb")
+      gemspecs = Dir.glob("*.gemspec")
 
-    def gemspec_path
-      @gemspec_path ||= begin
-        gemspecs = Dir.glob("*.gemspec")
-        raise UnfoundGemspecError if gemspecs.size.zero?
-        raise TooManyGemspecsFoundError if gemspecs.size > 1
-        gemspecs.first
+      if version_files.any?
+        raise TooManyVersionFilesError if version_files.size > 1
+        file = version_files.first
+        version = File.read(file)[VERSION_REGEX]
+      elsif gemspecs.any?
+        raise TooManyVersionFilesError if gemspecs.size > 1
+        file = gemspecs.first
+        version = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
+      else
+        raise UnfoundVersionFileError
       end
+
+      raise UnfoundVersionError unless version
+      [version, file]
     end
 
     def next_version(current, part)
