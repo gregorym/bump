@@ -7,61 +7,53 @@ module Bump
 
   class Bump
     
-    attr_accessor :bump, :output, :gemspec_path, :version, :next_version
+    attr_accessor :bump, :gemspec_path, :version, :next_version
     
     BUMPS = %w(major minor tiny)
     OPTIONS = BUMPS | ["current"]
-    VERSION_REGEX = /version\s*=\s*["|'](\d.\d.\d)["|']/
+    VERSION_REGEX = /\.version\s*=\s*["'](\d+\.\d+\.\d+)["']/
 
     def initialize(bump)
       @bump = bump.is_a?(Array) ? bump.first : bump
     end
 
     def run
-      begin
-        raise InvalidOptionError unless OPTIONS.include?(@bump)
+      @version = find_current_version
 
-        @gemspec_path = find_gemspec_file if @gemspec_path.nil?
-        @version = find_current_version
-        
-        case @bump
-          when "major", "minor", "tiny"
-            bump
-          when "current"
-            current
-          else
-            raise Exception
-        end
-        
-        rescue InvalidOptionError
-          @output = "Invalid option. Choose between #{OPTIONS.join(',')}."
-        rescue UnfoundVersionError
-          @output = "Unable to find your gem version"
-        rescue UnfoundGemspecError
-          @output = "Unable to find gemspec file"
-        rescue TooManyGemspecsFoundError
-          @output = "More than one gemspec file"
-        rescue Exception => e
-          @output = "Something wrong happened: #{e.message}"
+      case @bump
+      when "major", "minor", "tiny"
+        bump
+      when "current"
+        current
+      else
+        raise InvalidOptionError
       end
-      puts @output
-      return @output
+    rescue InvalidOptionError
+      ["Invalid option. Choose between #{OPTIONS.join(',')}.", 1]
+    rescue UnfoundVersionError
+      ["Unable to find your gem version", 1]
+    rescue UnfoundGemspecError
+      ["Unable to find gemspec file", 1]
+    rescue TooManyGemspecsFoundError
+      ["More than one gemspec file", 1]
+    rescue Exception => e
+      ["Something wrong happened: #{e.message}", 1]
     end
 
     private
 
     def bump
       @next_version = find_next_version
-      system(%(ruby -i -pe "gsub(/#{@version}/, '#{@next_version}')" #{@gemspec_path}))
-      @output = "Bump version #{@version} to #{@next_version}"
+      system(%(ruby -i -pe "gsub(/#{@version}/, '#{@next_version}')" #{gemspec_path}))
+      ["Bump version #{@version} to #{@next_version}", 0]
     end
 
     def current
-      @output = "Current version: #{@version}"
+      ["Current version: #{@version}", 0]
     end
 
     def find_current_version
-      match = File.read(@gemspec_path).match VERSION_REGEX
+      match = File.read(gemspec_path).match VERSION_REGEX
       if match.nil?
         raise UnfoundVersionError
       else
@@ -69,24 +61,26 @@ module Bump
       end
     end
 
-    def find_gemspec_file
-      gemspecs = Dir.glob("*.gemspec")
-      raise UnfoundGemspecError if gemspecs.size.zero?
-      raise TooManyGemspecsFoundError if gemspecs.size > 1
-      gemspecs.first 
+    def gemspec_path
+      @gemspec_path ||= begin
+        gemspecs = Dir.glob("*.gemspec")
+        raise UnfoundGemspecError if gemspecs.size.zero?
+        raise TooManyGemspecsFoundError if gemspecs.size > 1
+        gemspecs.first
+      end
     end
 
     def find_next_version
-      match = @version.match /(\d).(\d).(\d)/
+      match = @version.match /(\d+)\.(\d+)\.(\d+)/
       case @bump
-        when "major"
-          "#{match[1].to_i + 1}.0.0"
-        when "minor"
-          "#{match[1]}.#{match[2].to_i + 1}.0"
-        when "tiny"
-          "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
+      when "major"
+        "#{match[1].to_i + 1}.0.0"
+      when "minor"
+        "#{match[1]}.#{match[2].to_i + 1}.0"
+      when "tiny"
+        "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
       end
-    end 
+    end
 
   end
 end
