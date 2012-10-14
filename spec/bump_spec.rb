@@ -41,8 +41,8 @@ describe Bump do
       read(gemspec).should include('s.version = "4.2.3"')
     end
 
-    it "should bump tiny" do
-      bump("tiny").should include("4.2.4")
+    it "should bump patch" do
+      bump("patch").should include("4.2.4")
       read(gemspec).should include('s.version = "4.2.4"')
     end
 
@@ -57,14 +57,14 @@ describe Bump do
     end
 
     it "should bump more then 10" do
-      bump("tiny").should include("4.2.4")
-      bump("tiny").should include("4.2.5")
-      bump("tiny").should include("4.2.6")
-      bump("tiny").should include("4.2.7")
-      bump("tiny").should include("4.2.8")
-      bump("tiny").should include("4.2.9")
-      bump("tiny").should include("4.2.10")
-      bump("tiny").should include("4.2.11")
+      bump("patch").should include("4.2.4")
+      bump("patch").should include("4.2.5")
+      bump("patch").should include("4.2.6")
+      bump("patch").should include("4.2.7")
+      bump("patch").should include("4.2.8")
+      bump("patch").should include("4.2.9")
+      bump("patch").should include("4.2.10")
+      bump("patch").should include("4.2.11")
       read(gemspec).should include('s.version = "4.2.11"')
     end
   end
