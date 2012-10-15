@@ -2,6 +2,7 @@ require File.dirname(__FILE__) + "/../lib/bump.rb"
 
 describe Bump do
   let(:gemspec){ "fixture.gemspec" }
+  let(:version_rb_file){ "lib/foo/version.rb" }
 
   around do |example|
     run "rm -rf fixture && mkdir fixture"
@@ -28,7 +29,7 @@ describe Bump do
 
   it "should fail if version is weird" do
     write_gemspec('"a.b.c"')
-    bump("current", :fail => true).should include "Unable to find your gem version"
+    bump("current", :fail => true).should include "Unable to find a file with the gem version"
   end
 
   context ".version in gemspec" do
@@ -71,38 +72,59 @@ describe Bump do
 
   context "VERSION in version.rb" do
     before do
-      write "lib/foo/version.rb", <<-RUBY.sub(" "*8, "")
-        module Foo
-          VERSION = "1.2.3"
-        end
-      RUBY
+      write_version_rb
     end
 
     it "show current" do
       bump("current").should include("1.2.3")
-      read("lib/foo/version.rb").should include('  VERSION = "1.2.3"')
+      read(version_rb_file).should include('  VERSION = "1.2.3"')
     end
 
     it "should bump VERSION" do
       bump("minor").should include("1.3.0")
-      read("lib/foo/version.rb").should include('  VERSION = "1.3.0"')
+      read(version_rb_file).should include('  VERSION = "1.3.0"')
     end
 
     it "should bump Version" do
-      write "lib/foo/version.rb", <<-RUBY.sub(" "*8, "")
+      write version_rb_file, <<-RUBY.sub(" "*8, "")
         module Foo
           Version = "1.2.3"
         end
       RUBY
       bump("minor").should include("1.3.0")
-      read("lib/foo/version.rb").should include('  Version = "1.3.0"')
+      read(version_rb_file).should include('  Version = "1.3.0"')
     end
 
     it "should bump if a gemspec exists and leave it alone" do
       write_gemspec "Foo::VERSION"
       bump("minor").should include("1.3.0")
-      read("lib/foo/version.rb").should include('  VERSION = "1.3.0"')
+      read(version_rb_file).should include('  VERSION = "1.3.0"')
       read(gemspec).should include('version = Foo::VERSION')
+    end
+  end
+
+  context "version in VERSION" do
+    before do
+      write "VERSION", "1.2.3\n"
+    end
+
+    it "show current" do
+      bump("current").should include("1.2.3")
+      read("VERSION").should == "1.2.3\n"
+    end
+
+    it "should bump version" do
+      bump("minor").should include("1.3.0")
+      read("VERSION").should == "1.3.0\n"
+    end
+
+    it "should bump if a gemspec & version.rb exists and leave it alone" do
+      write_gemspec "File.read('VERSION')"
+      write_version_rb "File.read('VERSION')"
+      bump("minor").should include("1.3.0")
+      read("VERSION").should == "1.3.0\n"
+      read(version_rb_file).should include("VERSION = File.read('VERSION')")
+      read(gemspec).should include("version = File.read('VERSION')")
     end
   end
 
@@ -132,6 +154,14 @@ describe Bump do
     write gemspec, <<-RUBY.sub(" "*6, "")
       Gem::Specification.new do |s|
         s.version = #{version}
+      end
+    RUBY
+  end
+
+  def write_version_rb(version = '"1.2.3"')
+    write version_rb_file, <<-RUBY.sub(" "*6, "")
+      module Foo
+        VERSION = #{version}
       end
     RUBY
   end
