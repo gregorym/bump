@@ -1,7 +1,29 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/../lib/bump'
+require 'optparse'
 
-bump = Bump::Bump.new(ARGV)
-output, status = bump.run
+options = {
+  :commit => true
+}
+OptionParser.new do |opts|
+  opts.banner = <<BANNER
+Bump your gem version.
+
+Usage:
+    bump current  # show current version
+    bump patch    # increase patch version of your gem
+
+Options:
+BANNER
+  opts.on("--no-commit", "Do not make a commit.") { options[:commit] = false }
+  opts.on("-h", "--help","Show this.") { puts opts; exit }
+end.parse!
+
+if ARGV.size != 1
+  puts "Usage instructions: bump --help"
+  exit 1
+end
+
+require File.dirname(__FILE__) + '/../lib/bump'
+output, status = Bump::Bump.run(ARGV.first, options)
 puts output
 exit status

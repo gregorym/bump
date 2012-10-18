@@ -7,6 +7,7 @@ describe Bump do
   around do |example|
     run "rm -rf fixture && mkdir fixture"
     Dir.chdir "fixture" do
+      `git init && git commit --allow-empty -am 'initial'` # so we never accidentally do commit to the current repo
       example.call
     end
     run "rm -rf fixture"
@@ -18,18 +19,43 @@ describe Bump do
 
   it "should fail without command" do
     write_gemspec
-    bump("", :fail => true).should include "Invalid option"
+    bump("", :fail => true).should include "Usage instructions: bump --help"
+  end
+
+  it "should fail with invalid options" do
+    write_gemspec
+    bump("xxx", :fail => true).should include "Invalid option"
   end
 
   it "should fail with multiple gemspecs" do
     write_gemspec
-    write("xxxx.gemspec", "xxx")
+    write("xxxx.gemspec", "Gem::Specification.new{}")
     bump("current", :fail => true).should include "More than one gemspec file"
   end
 
   it "should fail if version is weird" do
-    write_gemspec('"a.b.c"')
+    write_gemspec('"1."+"3.4"')
     bump("current", :fail => true).should include "Unable to find a file with the gem version"
+  end
+
+  it "should show help" do
+    bump("--help").should include("bump current")
+  end
+
+  context "git" do
+    it "should commit the new version" do
+      write_gemspec
+      bump("patch")
+      `git log -1 --pretty=format:'%s'`.should == "v4.2.4"
+      `git status`.should include "nothing to commit"
+    end
+
+    it "should not commit if --no-commit flag was given" do
+      write_gemspec
+      bump("patch --no-commit")
+      `git log -1 --pretty=format:'%s'`.should == "initial"
+      `git status`.should_not include "nothing to commit"
+    end
   end
 
   context ".version in gemspec" do
@@ -96,10 +122,9 @@ describe Bump do
     end
 
     it "should bump if a gemspec exists and leave it alone" do
-      write_gemspec "Foo::VERSION"
+      write_gemspec "'1.'+'2.3'"
       bump("minor").should include("1.3.0")
-      read(version_rb_file).should include('  VERSION = "1.3.0"')
-      read(gemspec).should include('version = Foo::VERSION')
+      read(gemspec).should include("version = '1.'+'2.3'")
     end
   end
 
