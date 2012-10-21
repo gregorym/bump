@@ -100,7 +100,7 @@ module Bump
       when "major"
         major, minor, patch = major.succ, 0, 0
       when "minor"
-        minor, patch = minor.succ, 0
+        minor, patch, prerelease = minor.succ, 0, nil
       when "patch"
         patch = patch.succ
       else

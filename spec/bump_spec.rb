@@ -162,7 +162,14 @@ describe Bump do
 
       it "show current" do
         bump("current").should include(version)
-        read("VERSION").should == "#{version}\n"
+        read("VERSION").should include(version)
+      end
+
+      it "minor should drop prerelease" do
+        bump("minor").should include("1.3.0")
+        read("VERSION").should include("1.3.0")
+        bump("minor").should_not include("alpha")
+        read("VERSION").should_not include("alpha")
       end
     end
   end
