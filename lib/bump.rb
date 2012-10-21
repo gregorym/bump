@@ -94,17 +94,18 @@ module Bump
     end
 
     def self.next_version(current, part)
-      match = current.match /(\d+)\.(\d+)\.(\d+)/
+      major, minor, patch, *other = current.split('.')
       case part
       when "major"
-        "#{match[1].to_i + 1}.0.0"
+        major, minor, patch = major.succ, 0, 0
       when "minor"
-        "#{match[1]}.#{match[2].to_i + 1}.0"
+        minor, patch = minor.succ, 0
       when "patch"
-        "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
+        patch = patch.succ
       else
         raise "unknown part #{part.inspect}"
       end
+      [major, minor, patch, *other].compact.join('.')
     end
   end
 end
