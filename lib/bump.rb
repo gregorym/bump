@@ -79,7 +79,7 @@ module Bump
 
     def self.version_from_version
       return unless file = find_version_file("VERSION")
-      return unless version = File.read(file)[VERSION_REGEX]
+      return unless version = File.read(file)
       [version, file]
     end
 
@@ -94,6 +94,7 @@ module Bump
     end
 
     def self.next_version(current, part)
+      current, prerelease = current.split('-')
       major, minor, patch, *other = current.split('.')
       case part
       when "major"
@@ -105,7 +106,8 @@ module Bump
       else
         raise "unknown part #{part.inspect}"
       end
-      [major, minor, patch, *other].compact.join('.')
+      version = [major, minor, patch, *other].compact.join('.')
+      [version, prerelease].compact.join('-')
     end
   end
 end

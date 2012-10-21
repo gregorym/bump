@@ -153,6 +153,18 @@ describe Bump do
       read(version_rb_file).should include("VERSION = File.read('VERSION')")
       read(gemspec).should include("version = File.read('VERSION')")
     end
+
+    context "with pre-release identifier" do
+      let(:version) { "1.2.3-alpha" }
+      before do
+        write "VERSION", "#{version}\n"
+      end
+
+      it "show current" do
+        bump("current").should include(version)
+        read("VERSION").should == "#{version}\n"
+      end
+    end
   end
 
   private
