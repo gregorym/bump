@@ -8,7 +8,7 @@ module Bump
     BUMPS = %w(major minor patch)
     PRERELEASE = ["alpha","beta","rc",nil]
     OPTIONS = BUMPS | ["current"]
-    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-[alpha|beta|rc])?)/
+    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:alpha|beta|rc))?)/
 
     def self.run(bump, options)
       case bump
@@ -80,7 +80,7 @@ module Bump
 
     def self.version_from_version
       return unless file = find_version_file("VERSION")
-      return unless version = File.read(file)
+      return unless version = File.read(file)[VERSION_REGEX]
       [version, file]
     end
 
@@ -95,7 +95,6 @@ module Bump
     end
 
     def self.next_version(current, part)
-      current.strip!
       current, prerelease = current.split('-')
       major, minor, patch, *other = current.split('.')
       case part
