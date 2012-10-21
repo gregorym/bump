@@ -5,14 +5,14 @@ module Bump
   class UnfoundVersionFileError < StandardError; end
 
   class Bump
-    BUMPS = %w(major minor patch)
+    BUMPS = %w(major minor patch pre)
     PRERELEASE = ["alpha","beta","rc",nil]
     OPTIONS = BUMPS | ["current"]
     VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
     def self.run(bump, options)
       case bump
-      when "major", "minor", "patch", "pre"
+      when *BUMPS
         bump(bump, options)
       when "current"
         current
