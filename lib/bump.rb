@@ -8,7 +8,7 @@ module Bump
     BUMPS = %w(major minor patch)
     PRERELEASE = ["alpha","beta","rc",nil]
     OPTIONS = BUMPS | ["current"]
-    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:alpha|beta|rc))?)/
+    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
     def self.run(bump, options)
       case bump
