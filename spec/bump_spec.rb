@@ -201,6 +201,14 @@ describe Bump do
           read("VERSION").should include("1.2.3")
         end
       end
+
+      context "final" do
+        let(:version) { "1.2.3" }
+        it "should bump to alpha" do
+          bump("pre").should include("1.2.3-alpha")
+          read("VERSION").should include("1.2.3-alpha")
+        end
+      end
     end
   end
 

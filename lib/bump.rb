@@ -95,6 +95,7 @@ module Bump
     end
 
     def self.next_version(current, part)
+      current.strip!
       current, prerelease = current.split('-')
       major, minor, patch, *other = current.split('.')
       case part
