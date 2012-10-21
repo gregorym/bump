@@ -129,25 +129,27 @@ describe Bump do
   end
 
   context "version in VERSION" do
+    let(:version) { "1.2.3" }
+
     before do
-      write "VERSION", "1.2.3\n"
+      write "VERSION", "#{version}\n"
     end
 
     it "show current" do
-      bump("current").should include("1.2.3")
-      read("VERSION").should == "1.2.3\n"
+      bump("current").should include("#{version}")
+      read("VERSION").should include("#{version}")
     end
 
     it "should bump version" do
       bump("minor").should include("1.3.0")
-      read("VERSION").should == "1.3.0\n"
+      read("VERSION").should include("1.3.0")
     end
 
     it "should bump if a gemspec & version.rb exists and leave it alone" do
       write_gemspec "File.read('VERSION')"
       write_version_rb "File.read('VERSION')"
       bump("minor").should include("1.3.0")
-      read("VERSION").should == "1.3.0\n"
+      read("VERSION").should include("1.3.0")
       read(version_rb_file).should include("VERSION = File.read('VERSION')")
       read(gemspec).should include("version = File.read('VERSION')")
     end
