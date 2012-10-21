@@ -6,12 +6,13 @@ module Bump
 
   class Bump
     BUMPS = %w(major minor patch)
+    PRERELEASE = ["alpha","beta","rc",nil]
     OPTIONS = BUMPS | ["current"]
-    VERSION_REGEX = /(\d+\.\d+\.\d+)/
+    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-[alpha|beta|rc])?)/
 
     def self.run(bump, options)
       case bump
-      when "major", "minor", "patch"
+      when "major", "minor", "patch", "pre"
         bump(bump, options)
       when "current"
         current
@@ -103,6 +104,9 @@ module Bump
         minor, patch, prerelease = minor.succ, 0, nil
       when "patch"
         patch = patch.succ
+      when "pre"
+        prerelease.strip! if prerelease.respond_to? :strip
+        prerelease = PRERELEASE[PRERELEASE.index(prerelease).succ % PRERELEASE.length]
       else
         raise "unknown part #{part.inspect}"
       end

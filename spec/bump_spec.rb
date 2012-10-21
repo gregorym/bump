@@ -178,6 +178,29 @@ describe Bump do
         bump("major").should_not include("alpha")
         read("VERSION").should_not include("alpha")
       end
+
+      context "alpha" do
+        it "should bump to beta" do
+          bump("pre").should include("1.2.3-beta")
+          read("VERSION").should include("1.2.3-beta")
+        end
+      end
+
+      context "beta" do
+        let(:version) { "1.2.3-beta" }
+        it "should bump to rc" do
+          bump("pre").should include("1.2.3-rc")
+          read("VERSION").should include("1.2.3-rc")
+        end
+      end
+
+      context "rc" do
+        let(:version) { "1.2.3-rc" }
+        it "should bump to final" do
+          bump("pre").should include("1.2.3")
+          read("VERSION").should include("1.2.3")
+        end
+      end
     end
   end
 
