@@ -171,6 +171,13 @@ describe Bump do
         bump("minor").should_not include("alpha")
         read("VERSION").should_not include("alpha")
       end
+
+      it "major should drop prerelease" do
+        bump("major").should include("2.0.0")
+        read("VERSION").should include("2.0.0")
+        bump("major").should_not include("alpha")
+        read("VERSION").should_not include("alpha")
+      end
     end
   end
 

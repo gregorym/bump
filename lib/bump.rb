@@ -98,7 +98,7 @@ module Bump
       major, minor, patch, *other = current.split('.')
       case part
       when "major"
-        major, minor, patch = major.succ, 0, 0
+        major, minor, patch, prerelease = major.succ, 0, 0, nil
       when "minor"
         minor, patch, prerelease = minor.succ, 0, nil
       when "patch"
