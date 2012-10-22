@@ -33,6 +33,12 @@ module Bump
 
     private
 
+    # Private: Bump the current gem version
+    #
+    # part    -zone of the version to bump
+    # options -Options
+    #
+    # Returns a string the old and the new gem version
     def self.bump(part, options)
       current, file = current_version
       next_version = next_version(current, part)
@@ -42,21 +48,42 @@ module Bump
       ["Bump version #{current} to #{next_version}", 0]
     end
 
+    # Private: Commit changes
+    #
+    # version -New version of the gem
+    # file    -File to add to Git
+    # options -Options
+    #
+    # Returns the duplicated String.
     def self.commit(version, file, options)
       return unless File.directory?(".git")
       system("git add --update Gemfile.lock") if options[:bundle]
       system("git add --update #{file} && git commit -m 'v#{version}'")
     end
 
+    
+    # Private: Replace the old version with the new one in the given file
+    #
+    # file -File where replacement will happen
+    # old  -old gem version
+    # new  -new gem version
+    #
     def self.replace(file, old, new)
       content = File.read(file)
       File.open(file, "w"){|f| f.write(content.gsub(old, new)) }
     end
 
+    
+    # Private: Current version of the gem
+    #
+    # Returns the gem version
     def self.current
       ["Current version: #{current_version.first}", 0]
     end
 
+    # Private: Find the current gem version from different source
+    #
+    # Returns the gem version and the file containing the version
     def self.current_version
       version, file = (
         version_from_version_rb ||
@@ -68,24 +95,39 @@ module Bump
       [version, file]
     end
 
+    
+    # Private: Find the gem version for version.rb
+    #
+    # Returns the gem version and file
     def self.version_from_version_rb
       return unless file = find_version_file("*/**/version.rb")
       return unless version = File.read(file)[VERSION_REGEX]
       [version, file]
     end
 
+    # Private: Find the gem version for the gemspec
+    #
+    # Returns the gem version and file
     def self.version_from_gemspec
       return unless file = find_version_file("*.gemspec")
       return unless version = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
       [version, file]
     end
-
+    
+    # Private: find the gem version from version
+    #
+    # Returns the version and the file
     def self.version_from_version
       return unless file = find_version_file("VERSION")
       return unless version = File.read(file)[VERSION_REGEX]
       [version, file]
     end
-
+    
+    # Private: Find file from given regex
+    #
+    # pattern -Regular expression
+    #
+    # Returns a file
     def self.find_version_file(pattern)
       files = Dir.glob(pattern)
       case files.size
@@ -96,6 +138,13 @@ module Bump
       end
     end
 
+    
+    # Private: Compute the new gem version 
+    #
+    # current -current gem version
+    # part    -zone of the version to bump
+    #
+    # Returns the new gem version
     def self.next_version(current, part)
       current, prerelease = current.split('-')
       major, minor, patch, *other = current.split('.')
