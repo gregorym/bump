@@ -5,13 +5,14 @@ module Bump
   class UnfoundVersionFileError < StandardError; end
 
   class Bump
-    BUMPS = %w(major minor patch)
+    BUMPS = %w(major minor patch pre)
+    PRERELEASE = ["alpha","beta","rc",nil]
     OPTIONS = BUMPS | ["current"]
-    VERSION_REGEX = /(\d+\.\d+\.\d+)/
+    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
     def self.run(bump, options)
       case bump
-      when "major", "minor", "patch"
+      when *BUMPS
         bump(bump, options)
       when "current"
         current
@@ -96,17 +97,23 @@ module Bump
     end
 
     def self.next_version(current, part)
-      match = current.match /(\d+)\.(\d+)\.(\d+)/
+      current, prerelease = current.split('-')
+      major, minor, patch, *other = current.split('.')
       case part
       when "major"
-        "#{match[1].to_i + 1}.0.0"
+        major, minor, patch, prerelease = major.succ, 0, 0, nil
       when "minor"
-        "#{match[1]}.#{match[2].to_i + 1}.0"
+        minor, patch, prerelease = minor.succ, 0, nil
       when "patch"
-        "#{match[1]}.#{match[2]}.#{match[3].to_i + 1}"
+        patch = patch.succ
+      when "pre"
+        prerelease.strip! if prerelease.respond_to? :strip
+        prerelease = PRERELEASE[PRERELEASE.index(prerelease).succ % PRERELEASE.length]
       else
         raise "unknown part #{part.inspect}"
       end
+      version = [major, minor, patch, *other].compact.join('.')
+      [version, prerelease].compact.join('-')
     end
   end
 end
