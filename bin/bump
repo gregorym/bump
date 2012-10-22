@@ -2,7 +2,8 @@
 require 'optparse'
 
 options = {
-  :commit => true
+  :commit => true,
+  :bundle => File.exist?("Gemfile")
 }
 OptionParser.new do |opts|
   opts.banner = <<BANNER
@@ -17,6 +18,7 @@ Usage:
 Options:
 BANNER
   opts.on("--no-commit", "Do not make a commit.") { options[:commit] = false }
+  opts.on("--no-bundle", "Do not bundle.") { options[:bundle] = false }
   opts.on("-h", "--help","Show this.") { puts opts; exit }
 end.parse!
 

@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + "/../lib/bump.rb"
+require 'bundler'
 
 describe Bump do
   let(:gemspec){ "fixture.gemspec" }
@@ -45,16 +46,31 @@ describe Bump do
   context "git" do
     it "should commit the new version" do
       write_gemspec
+      `git add #{gemspec}`
+
       bump("patch")
+
       `git log -1 --pretty=format:'%s'`.should == "v4.2.4"
       `git status`.should include "nothing to commit"
     end
 
     it "should not commit if --no-commit flag was given" do
       write_gemspec
+      `git add #{gemspec}`
+
       bump("patch --no-commit")
+
       `git log -1 --pretty=format:'%s'`.should == "initial"
       `git status`.should_not include "nothing to commit"
+    end
+
+    it "should not add untracked gemspec" do
+      write_gemspec
+
+      bump("patch")
+
+      `git log -1 --pretty=format:'%s'`.should == "initial"
+      `git status`.should include "Untracked files:"
     end
   end
 
@@ -150,6 +166,36 @@ describe Bump do
       read("VERSION").should == "1.3.0\n"
       read(version_rb_file).should include("VERSION = File.read('VERSION')")
       read(gemspec).should include("version = File.read('VERSION')")
+    end
+  end
+
+  context "with a Gemfile" do
+    before do
+      write_gemspec('"1.0.0"')
+      write "Gemfile", <<-RUBY
+        gemspec
+      RUBY
+      `git add Gemfile #{gemspec}`
+      Bundler.with_clean_env { run("bundle") }
+    end
+
+    it "bundle to keep version up to date and commit changed Gemfile.lock" do
+      `git add Gemfile.lock`
+      Bundler.with_clean_env { bump("patch") }
+      read("Gemfile.lock").should include "1.0.1"
+      `git status`.should include "nothing to commit"
+    end
+
+    it "does not bundle with --no-bundle" do
+      Bundler.with_clean_env { bump("patch --no-bundle") }
+      read(gemspec).should include "1.0.1"
+      read("Gemfile.lock").should include "1.0.0"
+    end
+
+    it "does not commit an untracked Gemfile.lock" do
+      Bundler.with_clean_env { bump("patch") }
+      read("Gemfile.lock").should include "1.0.1"
+      `git status`.should include "Untracked files:"
     end
   end
 

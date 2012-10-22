@@ -36,13 +36,15 @@ module Bump
       current, file = current_version
       next_version = next_version(current, part)
       replace(file, current, next_version)
-      commit(next_version, file) if options[:commit]
+      system("bundle") if options[:bundle]
+      commit(next_version, file, options) if options[:commit]
       ["Bump version #{current} to #{next_version}", 0]
     end
 
-    def self.commit(version, file)
+    def self.commit(version, file, options)
       return unless File.directory?(".git")
-      raise unless system("git add #{file} && git commit -m 'v#{version}'")
+      system("git add --update Gemfile.lock") if options[:bundle]
+      system("git add --update #{file} && git commit -m 'v#{version}'")
     end
 
     def self.replace(file, old, new)
