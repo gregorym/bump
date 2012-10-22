@@ -145,27 +145,86 @@ describe Bump do
   end
 
   context "version in VERSION" do
+    let(:version) { "1.2.3" }
+
     before do
-      write "VERSION", "1.2.3\n"
+      write "VERSION", "#{version}\n"
     end
 
     it "show current" do
-      bump("current").should include("1.2.3")
-      read("VERSION").should == "1.2.3\n"
+      bump("current").should include("#{version}")
+      read("VERSION").should include("#{version}")
     end
 
     it "should bump version" do
       bump("minor").should include("1.3.0")
-      read("VERSION").should == "1.3.0\n"
+      read("VERSION").should include("1.3.0")
     end
 
     it "should bump if a gemspec & version.rb exists and leave it alone" do
       write_gemspec "File.read('VERSION')"
       write_version_rb "File.read('VERSION')"
       bump("minor").should include("1.3.0")
-      read("VERSION").should == "1.3.0\n"
+      read("VERSION").should include("1.3.0")
       read(version_rb_file).should include("VERSION = File.read('VERSION')")
       read(gemspec).should include("version = File.read('VERSION')")
+    end
+
+    context "with pre-release identifier" do
+      let(:version) { "1.2.3-alpha" }
+      before do
+        write "VERSION", "#{version}\n"
+      end
+
+      it "show current" do
+        bump("current").should include(version)
+        read("VERSION").should include(version)
+      end
+
+      it "minor should drop prerelease" do
+        bump("minor").should include("1.3.0")
+        read("VERSION").should include("1.3.0")
+        bump("minor").should_not include("alpha")
+        read("VERSION").should_not include("alpha")
+      end
+
+      it "major should drop prerelease" do
+        bump("major").should include("2.0.0")
+        read("VERSION").should include("2.0.0")
+        bump("major").should_not include("alpha")
+        read("VERSION").should_not include("alpha")
+      end
+
+      context "alpha" do
+        it "should bump to beta" do
+          bump("pre").should include("1.2.3-beta")
+          read("VERSION").should include("1.2.3-beta")
+        end
+      end
+
+      context "beta" do
+        let(:version) { "1.2.3-beta" }
+        it "should bump to rc" do
+          bump("pre").should include("1.2.3-rc")
+          read("VERSION").should include("1.2.3-rc")
+        end
+      end
+
+      context "rc" do
+        let(:version) { "1.2.3-rc" }
+        it "should bump to final" do
+          bump("pre").should include("1.2.3")
+          read("VERSION").should include("1.2.3")
+        end
+      end
+
+      context "final" do
+        let(:version) { "1.2.3" }
+        it "should bump to alpha" do
+          bump("pre").should include("1.2.3-alpha")
+          read("VERSION").should include("1.2.3-alpha")
+        end
+      end
     end
   end
 
