@@ -37,7 +37,7 @@ module Bump
       current, file = current_version
       next_version = next_version(current, part)
       replace(file, current, next_version)
-      system("bundle") if options[:bundle]
+      system("bundle") if options[:bundle] and under_version_control?("Gemfile.lock")
       commit(next_version, file, options) if options[:commit]
       ["Bump version #{current} to #{next_version}", 0]
     end
@@ -114,6 +114,11 @@ module Bump
       end
       version = [major, minor, patch, *other].compact.join('.')
       [version, prerelease].compact.join('-')
+    end
+
+    def self.under_version_control?(file)
+      @all_files ||= `git ls-files`.split(/\r?\n/)
+      @all_files.include?(file)
     end
   end
 end

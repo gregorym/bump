@@ -249,12 +249,13 @@ describe Bump do
       Bundler.with_clean_env { bump("patch --no-bundle") }
       read(gemspec).should include "1.0.1"
       read("Gemfile.lock").should include "1.0.0"
+      `git status --porcelain`.should include "?? Gemfile.lock"
     end
 
-    it "does not commit an untracked Gemfile.lock" do
+    it "does not bundle or commit an untracked Gemfile.lock" do
       Bundler.with_clean_env { bump("patch") }
-      read("Gemfile.lock").should include "1.0.1"
-      `git status`.should include "Untracked files:"
+      read("Gemfile.lock").should include "1.0.0"
+      `git status --porcelain`.should include "?? Gemfile.lock"
     end
   end
 
