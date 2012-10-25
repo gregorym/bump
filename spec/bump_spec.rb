@@ -1,18 +1,10 @@
-require File.dirname(__FILE__) + "/../lib/bump.rb"
-require 'bundler'
+require "spec_helper"
 
 describe Bump do
   let(:gemspec){ "fixture.gemspec" }
   let(:version_rb_file){ "lib/foo/version.rb" }
 
-  around do |example|
-    run "rm -rf fixture && mkdir fixture"
-    Dir.chdir "fixture" do
-      `git init && git commit --allow-empty -am 'initial'` # so we never accidentally do commit to the current repo
-      example.call
-    end
-    run "rm -rf fixture"
-  end
+  inside_of_folder("spec/fixture")
 
   it "should fail if it cannot find anything to bump" do
     bump("current", :fail => true).should include "Unable to find"
@@ -260,22 +252,6 @@ describe Bump do
   end
 
   private
-
-  def write(file, content)
-    folder = File.dirname(file)
-    run "mkdir -p #{folder}" unless File.exist?(folder)
-    File.open(file, 'w'){|f| f.write content }
-  end
-
-  def read(file)
-    File.read(file)
-  end
-
-  def run(cmd, options={})
-    result = `#{cmd} 2>&1`
-    raise "FAILED #{cmd} --> #{result}" if $?.success? != !options[:fail]
-    result
-  end
 
   def bump(command="", options={})
     run "#{File.expand_path("../../bin/bump", __FILE__)} #{command}", options
