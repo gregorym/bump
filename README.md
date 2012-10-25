@@ -16,6 +16,16 @@ Bump your gemfile (major, minor, patch):
 
 Bump version 0.1.2 to 0.1.3
 
+### Rake
+
+```Ruby
+# Rakefile
+require "bump/tasks"
+```
+
+    rake bump:patch
+    rake bump:current
+
 # Supported locations
  - VERSION file with "1.2.3"
  - gemspec with `gem.version = "1.2.3"`
