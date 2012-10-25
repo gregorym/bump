@@ -10,7 +10,16 @@ module Bump
     OPTIONS = BUMPS | ["current"]
     VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
-    def self.run(bump, options)
+    def self.defaults
+      {
+        :commit => true,
+        :bundle => File.exist?("Gemfile")
+      }
+    end
+
+    def self.run(bump, options={})
+      options = defaults.merge(options)
+
       case bump
       when *BUMPS
         bump(bump, options)

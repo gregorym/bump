@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
 require 'optparse'
 
-options = {
-  :commit => true,
-  :bundle => File.exist?("Gemfile")
-}
+options = {}
 OptionParser.new do |opts|
   opts.banner = <<BANNER
 Bump your gem version.
