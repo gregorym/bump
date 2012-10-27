@@ -104,6 +104,21 @@ describe Bump do
     end
   end
 
+  context ".version in gemspec within the initializer" do
+    before do
+      write gemspec, <<-RUBY.sub(" "*6, "")
+        Gem::Specification.new "bump", "4.2.3" do
+        end
+      RUBY
+    end
+
+    it "should bump patch" do
+      bump("patch").should include("4.2.4")
+      read(gemspec).should include('"4.2.4"')
+    end
+  end
+
+
   context "VERSION in version.rb" do
     before do
       write_version_rb

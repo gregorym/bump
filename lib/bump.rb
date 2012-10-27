@@ -5,9 +5,9 @@ module Bump
   class UnfoundVersionFileError < StandardError; end
 
   class Bump
-    BUMPS = %w(major minor patch pre)
-    PRERELEASE = ["alpha","beta","rc",nil]
-    OPTIONS = BUMPS | ["current"]
+    BUMPS         = %w(major minor patch pre)
+    PRERELEASE    = ["alpha","beta","rc",nil]
+    OPTIONS       = BUMPS | ["current"]
     VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
     def self.defaults
@@ -84,8 +84,9 @@ module Bump
     end
 
     def self.version_from_gemspec
-      return unless file = find_version_file("*.gemspec")
-      return unless version = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
+      return unless file    = find_version_file("*.gemspec")
+      version               = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
+      return unless version = File.read(file)[/Gem::Specification.new.+ ["']#{VERSION_REGEX}["']/, 1] if version.nil?
       [version, file]
     end
 
