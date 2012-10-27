@@ -28,14 +28,14 @@ require "bump/tasks"
 
 # Supported locations
  - VERSION file with "1.2.3"
- - gemspec with `gem.version = "1.2.3"`
+ - gemspec with `gem.version = "1.2.3"` or :Specification.new "gem-name", "1.2.3" do`
  - lib/**/version.rb file with `VERSION = "1.2.3"`
 
 # Todo
 
  - Handle options properly
  - `VERSION = "1.2.3"` in lib/*.rb
- - gemspec with `Gem::Specification.new "gem-name", "1.2.3" do`
+ - Build new gem version: gem build xxx.gemspec
 
 # Author
 Gregory<br/>
