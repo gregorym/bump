@@ -106,7 +106,10 @@ describe Bump do
 
   context ".version in gemspec within the initializer" do
     before do
-      write_gemspec("4.2.3", 'inline')
+      write gemspec, <<-RUBY.sub(" "*6, "")
+        Gem::Specification.new "bump", "4.2.3" do
+        end
+      RUBY
     end
 
     it "should bump patch" do
@@ -269,20 +272,12 @@ describe Bump do
     run "#{File.expand_path("../../bin/bump", __FILE__)} #{command}", options
   end
 
-  def write_gemspec(version = '"4.2.3"', type = 'block')
-    case type
-    when 'block'
-      write gemspec, <<-RUBY.sub(" "*6, "")
-        Gem::Specification.new do |s|
-          s.version = #{version}
-        end
-      RUBY
-    when 'inline'
-      write gemspec, <<-RUBY.sub(" "*6, "")
-        Gem::Specification.new "bump", "#{version}" do
-        end
-      RUBY
-    end    
+  def write_gemspec(version = '"4.2.3"')
+    write gemspec, <<-RUBY.sub(" "*6, "")
+      Gem::Specification.new do |s|
+        s.version = #{version}
+      end
+    RUBY
   end
 
   def write_version_rb(version = '"1.2.3"')
