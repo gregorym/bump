@@ -28,7 +28,7 @@ require "bump/tasks"
 
 # Supported locations
  - VERSION file with "1.2.3"
- - gemspec with `gem.version = "1.2.3"` or :Specification.new "gem-name", "1.2.3" do`
+ - gemspec with `gem.version = "1.2.3"` or `Gem:Specification.new "gem-name", "1.2.3" do`
  - lib/**/version.rb file with `VERSION = "1.2.3"`
 
 # Todo
