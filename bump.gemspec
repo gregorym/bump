@@ -1,5 +1,5 @@
 Gem::Specification.new "bump" do |s|
-  s.version = "0.3.3"
+  s.version = "0.3.4"
   s.author = "Gregory Marcilhacy"
   s.email = "g.marcilhacy@gmail.com"
   s.homepage = "https://github.com/gregorym/bump"
