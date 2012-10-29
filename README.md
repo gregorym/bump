@@ -26,6 +26,13 @@ require "bump/tasks"
     rake bump:patch
     rake bump:current
 
+### Ruby
+```Ruby
+require "bump"
+Bump::Bump.run("patch")   # -> version changed
+Bump::Bump.current        # -> "1.2.3"
+```
+
 # Supported locations
  - VERSION file with "1.2.3"
  - gemspec with `gem.version = "1.2.3"` or `Gem:Specification.new "gem-name", "1.2.3" do`

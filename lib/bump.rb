@@ -24,7 +24,7 @@ module Bump
       when *BUMPS
         bump(bump, options)
       when "current"
-        current
+        ["Current version: #{current}", 0]
       else
         raise InvalidOptionError
       end
@@ -40,10 +40,14 @@ module Bump
       ["Something wrong happened: #{e.message}\n#{e.backtrace.join("\n")}", 1]
     end
 
+    def self.current
+      current_info.first
+    end
+
     private
 
     def self.bump(part, options)
-      current, file = current_version
+      current, file = current_info
       next_version = next_version(current, part)
       replace(file, current, next_version)
       system("bundle") if options[:bundle] and under_version_control?("Gemfile.lock")
@@ -62,11 +66,7 @@ module Bump
       File.open(file, "w"){|f| f.write(content.gsub(old, new)) }
     end
 
-    def self.current
-      ["Current version: #{current_version.first}", 0]
-    end
-
-    def self.current_version
+    def self.current_info
       version, file = (
         version_from_version_rb ||
         version_from_gemspec ||

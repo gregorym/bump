@@ -118,7 +118,6 @@ describe Bump do
     end
   end
 
-
   context "VERSION in version.rb" do
     before do
       write_version_rb
@@ -263,6 +262,13 @@ describe Bump do
       Bundler.with_clean_env { bump("patch") }
       read("Gemfile.lock").should include "1.0.0"
       `git status --porcelain`.should include "?? Gemfile.lock"
+    end
+  end
+
+  context ".current" do
+    it "returns the version as a string" do
+      write_gemspec
+      Bump::Bump.current.should == "4.2.3"
     end
   end
 
