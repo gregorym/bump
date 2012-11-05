@@ -1,3 +1,7 @@
+# Introduction
+Bump is a gem that will simplify the way you build gems. 
+
+
 # Installation
 
     gem install bump
@@ -10,11 +14,17 @@ Current version of your gem:
 
 Current version: 0.1.2
 
-Bump your gemfile (major, minor, patch):
+Bump your gemfile (major, minor, patch, pre):
 
     bump patch
 
 Bump version 0.1.2 to 0.1.3
+
+### Options
+
+    bump patch --no-commit
+
+    bump patch --no-bundle
 
 ### Rake
 
