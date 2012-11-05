@@ -22,8 +22,15 @@ Bump version 0.1.2 to 0.1.3
 
 ### Options
 
+### --no-commit
+If you don't want to make a commit after bumping your gem, add the `--no-commit` option.
+    
     bump patch --no-commit
 
+
+### --no-bundle
+If you don't want to run the `bundle` command after bumping your gem, add the `--no-bundle` option.
+    
     bump patch --no-bundle
 
 ### Rake
