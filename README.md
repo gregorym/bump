@@ -57,9 +57,7 @@ Bump::Bump.current        # -> "1.2.3"
 
 # Todo
 
- - Handle options properly
  - `VERSION = "1.2.3"` in lib/*.rb
- - Build new gem version: gem build xxx.gemspec
 
 # Author
 Gregory<br/>
