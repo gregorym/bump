@@ -281,7 +281,9 @@ describe Bump do
   def write_gemspec(version = '"4.2.3"')
     write gemspec, <<-RUBY.sub(" "*6, "")
       Gem::Specification.new do |s|
+        s.name    = 'fixture'
         s.version = #{version}
+        s.summary = 'Fixture gem'
       end
     RUBY
   end
