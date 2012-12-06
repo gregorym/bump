@@ -77,12 +77,6 @@ module Bump
       [version, file]
     end
 
-    def self.version_from_version_rb
-      return unless file = find_version_file("*/**/version.rb")
-      return unless version = File.read(file)[VERSION_REGEX]
-      [version, file]
-    end
-
     def self.version_from_gemspec
       return unless file    = find_version_file("*.gemspec")
       version               = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
@@ -90,8 +84,17 @@ module Bump
       [version, file]
     end
 
+    def self.version_from_version_rb
+      return unless file = find_version_file("*/**/version.rb")
+      extract_version_from_file(file)
+    end
+
     def self.version_from_version
       return unless file = find_version_file("VERSION")
+      extract_version_from_file(file)
+    end
+
+    def self.extract_version_from_file(file)
       return unless version = File.read(file)[VERSION_REGEX]
       [version, file]
     end
