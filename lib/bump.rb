@@ -71,6 +71,7 @@ module Bump
         version_from_version_rb ||
         version_from_gemspec ||
         version_from_version ||
+        version_from_lib_rb  ||
         raise(UnfoundVersionFileError)
       )
       raise UnfoundVersionError unless version
@@ -85,12 +86,18 @@ module Bump
     end
 
     def self.version_from_version_rb
-      return unless file = find_version_file("*/**/version.rb")
+      return unless file = find_version_file("lib/**/version.rb")
       extract_version_from_file(file)
     end
 
     def self.version_from_version
       return unless file = find_version_file("VERSION")
+      extract_version_from_file(file)
+    end
+
+    def self.version_from_lib_rb
+      file = find_version_file('lib/*.rb')
+      return unless file && File.read(file) =~ /VERSION = (['"])#{VERSION_REGEX}['"]/i
       extract_version_from_file(file)
     end
 

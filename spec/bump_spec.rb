@@ -1,8 +1,9 @@
 require "spec_helper"
 
 describe Bump do
-  let(:gemspec){ "fixture.gemspec" }
-  let(:version_rb_file){ "lib/foo/version.rb" }
+  let(:gemspec) { "fixture.gemspec" }
+  let(:version_rb_file) { "lib/foo/version.rb" }
+  let(:lib_rb_file) { "lib/foo.rb" }
 
   inside_of_folder("spec/fixture")
 
@@ -238,6 +239,7 @@ describe Bump do
     before do
       write_gemspec('"1.0.0"')
       write "Gemfile", <<-RUBY
+        source :rubygems
         gemspec
       RUBY
       `git add Gemfile #{gemspec}`
@@ -272,6 +274,38 @@ describe Bump do
     end
   end
 
+  context "VERSION in lib file" do
+    before do
+      write_lib_rb
+    end
+
+    it "show current" do
+      bump("current").should include("1.2.3")
+      read(lib_rb_file).should include('  VERSION = "1.2.3"')
+    end
+
+    it "should bump VERSION" do
+      bump("minor").should include("1.3.0")
+      read(lib_rb_file).should include('  VERSION = "1.3.0"')
+    end
+
+    it "should bump Version" do
+      write lib_rb_file, <<-RUBY.sub(" "*8, "")
+        module Foo
+          Version = "1.2.3"
+        end
+      RUBY
+      bump("minor").should include("1.3.0")
+      read(lib_rb_file).should include('  Version = "1.3.0"')
+    end
+
+    it "should bump if a gemspec exists and leave it alone" do
+      write_gemspec "'1.'+'2.3'"
+      bump("minor").should include("1.3.0")
+      read(gemspec).should include("version = '1.'+'2.3'")
+    end
+  end
+
   private
 
   def bump(command="", options={})
@@ -290,6 +324,14 @@ describe Bump do
 
   def write_version_rb(version = '"1.2.3"')
     write version_rb_file, <<-RUBY.sub(" "*6, "")
+      module Foo
+        VERSION = #{version}
+      end
+    RUBY
+  end
+
+  def write_lib_rb(version = '"1.2.3"')
+    write lib_rb_file, <<-RUBY.sub(" "*6, "")
       module Foo
         VERSION = #{version}
       end
