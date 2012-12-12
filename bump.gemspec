@@ -10,9 +10,8 @@ Gem::Specification.new "bump" do |s|
   s.require_path = "lib"
   s.executables = ["bump"]
 
-  s.add_development_dependency 'rake', '~> 10.0.2'
-  s.add_development_dependency 'bundler', '~> 1.2.3'
-  s.add_development_dependency 'rspec', '~> 2.11.0'
+  s.add_development_dependency 'rake', '~> 10.0.0'
+  s.add_development_dependency 'rspec', '~> 2.0'
 end
 
 

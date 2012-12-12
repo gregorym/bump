@@ -22,6 +22,5 @@ PLATFORMS
 
 DEPENDENCIES
   bump!
-  bundler (~> 1.2.3)
-  rake (~> 10.0.2)
-  rspec (~> 2.11.0)
+  rake (~> 10.0.0)
+  rspec (~> 2.0)
