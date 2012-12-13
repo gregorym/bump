@@ -97,7 +97,7 @@ module Bump
 
     def self.version_from_lib_rb
       file = find_version_file('lib/*.rb')
-      return unless file && File.read(file) =~ /VERSION = (['"])#{VERSION_REGEX}['"]/i
+      return unless file && File.open(file).lines.grep(/^VERSION = (['"])#{VERSION_REGEX}['"]/i)
       extract_version_from_file(file)
     end
 
