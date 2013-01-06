@@ -307,6 +307,15 @@ describe Bump do
       bump("minor").should include("1.3.0")
       read(gemspec).should include("version = '1.'+'2.3'")
     end
+
+    context "that is nested" do
+      let(:version_file) { "lib/bar/baz/foo.rb" }
+
+      it "show current" do
+        bump("current").should include("1.2.3")
+        read(version_file).should include('  VERSION = "1.2.3"')
+      end
+    end
   end
 
   private
