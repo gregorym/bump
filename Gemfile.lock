@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bump (0.3.8)
+    bump (0.3.9)
 
 GEM
   remote: http://rubygems.org/
