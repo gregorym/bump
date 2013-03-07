@@ -1,5 +1,5 @@
 # Introduction
-Bump is a gem that will simplify the way you build gems. 
+Bump is a gem that will simplify the way you build gems and chef-cookbooks.
 
 
 # Installation
@@ -8,13 +8,13 @@ Bump is a gem that will simplify the way you build gems.
 
 # Usage
 
-Current version of your gem:
+Current version:
 
     bump current
 
 Current version: 0.1.2
 
-Bump your gemfile (major, minor, patch, pre):
+Bump (major, minor, patch, pre):
 
     bump patch
 
@@ -23,13 +23,13 @@ Bump version 0.1.2 to 0.1.3
 ### Options
 
 ### --no-commit
-If you don't want to make a commit after bumping your gem, add the `--no-commit` option.
+If you don't want to make a commit after bumping, add the `--no-commit` option.
     
     bump patch --no-commit
 
 
 ### --no-bundle
-If you don't want to run the `bundle` command after bumping your gem, add the `--no-bundle` option.
+If you don't want to run the `bundle` command after bumping, add the `--no-bundle` option.
     
     bump patch --no-bundle
 
@@ -54,6 +54,7 @@ Bump::Bump.current        # -> "1.2.3"
  - VERSION file with "1.2.3"
  - gemspec with `gem.version = "1.2.3"` or `Gem:Specification.new "gem-name", "1.2.3" do`
  - lib/**/version.rb file with `VERSION = "1.2.3"`
+ - metadata.rb with `version "1.2.3"`
 
 # Todo
 

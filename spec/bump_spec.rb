@@ -320,6 +320,20 @@ describe Bump do
     end
   end
 
+  context "version in metadata.rb" do
+    let(:version) { "1.2.3" }
+    let(:version_file) { "metadata.rb" }
+
+    before do
+      write version_file, "foo :bar\nversion '#{version}'\nbar :baz\n"
+    end
+
+    it "should bump version" do
+      bump("minor").should include("1.3.0")
+      read(version_file).should include("1.3.0")
+    end
+  end
+
   private
 
   def bump(command="", options={})
