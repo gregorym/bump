@@ -280,6 +280,8 @@ describe Bump do
 
     before do
       write_version_file
+      write("lib/random_other_file.rb", "foo")
+      write("lib/random/other/file.rb", "foo")
     end
 
     it "show current" do
@@ -339,6 +341,6 @@ describe Bump do
       module Foo
         VERSION = #{version}
       end
-        RUBY
+    RUBY
   end
 end
