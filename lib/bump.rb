@@ -1,5 +1,6 @@
 module Bump
   class InvalidOptionError < StandardError; end
+  class InvalidVersionError < StandardError; end
   class UnfoundVersionError < StandardError; end
   class TooManyVersionFilesError < StandardError; end
   class UnfoundVersionFileError < StandardError; end
@@ -7,7 +8,7 @@ module Bump
   class Bump
     BUMPS         = %w(major minor patch pre)
     PRERELEASE    = ["alpha","beta","rc",nil]
-    OPTIONS       = BUMPS | ["current"]
+    OPTIONS       = BUMPS | ["set", "current"]
     VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
     def self.defaults
@@ -22,7 +23,10 @@ module Bump
 
       case bump
       when *BUMPS
-        bump(bump, options)
+        bump_part(bump, options)
+      when "set"
+        raise InvalidVersionError unless options[:version]
+        bump_set(options[:version], options)
       when "current"
         ["Current version: #{current}", 0]
       else
@@ -30,6 +34,8 @@ module Bump
       end
     rescue InvalidOptionError
       ["Invalid option. Choose between #{OPTIONS.join(',')}.", 1]
+    rescue InvalidVersionError
+      ["Invalid version number given.", 1]
     rescue UnfoundVersionError
       ["Unable to find your gem version", 1]
     rescue UnfoundVersionFileError
@@ -46,13 +52,22 @@ module Bump
 
     private
 
-    def self.bump(part, options)
-      current, file = current_info
-      next_version = next_version(current, part)
+    def self.bump(file, current, next_version, options)
       replace(file, current, next_version)
       system("bundle") if options[:bundle] and under_version_control?("Gemfile.lock")
       commit(next_version, file, options) if options[:commit]
       ["Bump version #{current} to #{next_version}", 0]
+    end
+
+    def self.bump_part(part, options)
+      current, file = current_info
+      next_version = next_version(current, part)
+      bump(file, current, next_version, options)
+    end
+
+    def self.bump_set(next_version, options)
+      current, file = current_info
+      bump(file, current, next_version, options)
     end
 
     def self.commit(version, file, options)

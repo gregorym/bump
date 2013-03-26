@@ -9,9 +9,20 @@ namespace :bump do
     end
 
     task bump do
-      output, status = Bump::Bump.run(bump)
-      puts output
-      abort unless status == 0
+      run_bump(bump)
     end
   end
+
+  desc "Sets the version number using the VERSION environment variable"
+  task :set do
+    run_bump("set", :version => ENV['VERSION'])
+  end
 end
+
+def run_bump(bump, options = {})
+  output, status = Bump::Bump.run(bump, options)
+  puts output
+  abort unless status == 0
+end
+
+
