@@ -97,9 +97,11 @@ module Bump
     end
 
     def self.version_from_lib_rb
-      file = find_version_file("lib/**/*.rb")
-      return unless file && File.read(file) =~ /^\s+VERSION = ['"](#{VERSION_REGEX})['"]/i
-      [$1, file]
+      files = Dir.glob("lib/**/*.rb")
+      file = files.detect do |file|
+        File.read(file) =~ /^\s+VERSION = ['"](#{VERSION_REGEX})['"]/i
+      end
+      [$1, file] if file
     end
 
     def self.version_from_chef
