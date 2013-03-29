@@ -16,6 +16,13 @@ describe "rake bump" do
     `git log -1 --pretty=format:'%s'`.should == "v1.3.0"
   end
 
+  it "sets a version" do
+    output = run "VERSION=1.3.0 rake bump:set"
+    output.should include("1.3.0")
+    read("VERSION").should == "1.3.0\n"
+    `git log -1 --pretty=format:'%s'`.should == "v1.3.0"
+  end
+
   it "fails when it cannot bump" do
     write "VERSION", "AAA"
     run "rake bump:minor", :fail => true

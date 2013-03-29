@@ -90,6 +90,11 @@ describe Bump do
       read(gemspec).should include('s.version = "5.0.0"')
     end
 
+    it "should set the version" do
+      bump("set 1.2.3").should include("1.2.3")
+      read(gemspec).should include('s.version = "1.2.3"')
+    end
+
     it "should bump more then 10" do
       bump("patch").should include("4.2.4")
       bump("patch").should include("4.2.5")
@@ -115,6 +120,11 @@ describe Bump do
       bump("patch").should include("4.2.4")
       read(gemspec).should include('"4.2.4"')
     end
+
+    it "should set the version" do
+      bump("set 1.2.3").should include("1.2.3")
+      read(gemspec).should include('"1.2.3"')
+    end
   end
 
   context "VERSION in version.rb" do
@@ -134,6 +144,11 @@ describe Bump do
       read(version_file).should include('  VERSION = "1.3.0"')
     end
 
+    it "should set the version" do
+      bump("set 1.2.3").should include("1.2.3")
+      read(version_file).should include('"1.2.3"')
+    end
+
     it "should bump Version" do
       write version_file, <<-RUBY.sub(" "*8, "")
         module Foo
@@ -141,6 +156,16 @@ describe Bump do
         end
       RUBY
       bump("minor").should include("1.3.0")
+      read(version_file).should include('  Version = "1.3.0"')
+    end
+
+    it "should set Version" do
+      write version_file, <<-RUBY.sub(" "*8, "")
+        module Foo
+          Version = "1.2.3"
+        end
+      RUBY
+      bump("set 1.3.0").should include("1.3.0")
       read(version_file).should include('  Version = "1.3.0"')
     end
 
@@ -166,6 +191,11 @@ describe Bump do
 
     it "should bump version" do
       bump("minor").should include("1.3.0")
+      read("VERSION").should include("1.3.0")
+    end
+
+    it "should set the version" do
+      bump("set 1.3.0").should include("1.3.0")
       read("VERSION").should include("1.3.0")
     end
 
@@ -294,6 +324,11 @@ describe Bump do
       read(version_file).should include('  VERSION = "1.3.0"')
     end
 
+    it "should set VERSION" do
+      bump("set 1.3.0").should include("1.3.0")
+      read(version_file).should include('  VERSION = "1.3.0"')
+    end
+
     it "should bump Version" do
       write version_file, <<-RUBY.sub(" "*8, "")
         module Foo
@@ -301,6 +336,16 @@ describe Bump do
         end
       RUBY
       bump("minor").should include("1.3.0")
+      read(version_file).should include('  Version = "1.3.0"')
+    end
+
+    it "should set Version" do
+      write version_file, <<-RUBY.sub(" "*8, "")
+        module Foo
+          Version = "1.2.3"
+        end
+      RUBY
+      bump("set 1.3.0").should include("1.3.0")
       read(version_file).should include('  Version = "1.3.0"')
     end
 
@@ -330,6 +375,11 @@ describe Bump do
 
     it "should bump version" do
       bump("minor").should include("1.3.0")
+      read(version_file).should include("1.3.0")
+    end
+
+    it "should set the version" do
+      bump("set 1.3.0").should include("1.3.0")
       read(version_file).should include("1.3.0")
     end
   end
