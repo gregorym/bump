@@ -54,9 +54,21 @@ module Bump
 
     def self.bump(file, current, next_version, options)
       replace(file, current, next_version)
-      system("bundle") if options[:bundle] and under_version_control?("Gemfile.lock")
+      if options[:bundle] and under_version_control?("Gemfile.lock")
+        bundler_with_clean_env do
+          system("bundle")
+        end
+      end
       commit(next_version, file, options) if options[:commit]
       ["Bump version #{current} to #{next_version}", 0]
+    end
+
+    def self.bundler_with_clean_env(&block)
+      if defined?(Bundler)
+        Bundler.with_clean_env(&block)
+      else
+        yield
+      end
     end
 
     def self.bump_part(part, options)

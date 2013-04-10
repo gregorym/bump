@@ -271,6 +271,7 @@ describe Bump do
       write_gemspec('"1.0.0"')
       write "Gemfile", <<-RUBY
         source :rubygems
+        gem "parallel" # a gem not in the Gemfile used to run this test
         gemspec
       RUBY
       `git add Gemfile #{gemspec}`
@@ -279,20 +280,20 @@ describe Bump do
 
     it "bundle to keep version up to date and commit changed Gemfile.lock" do
       `git add Gemfile.lock`
-      Bundler.with_clean_env { bump("patch") }
+      bump("patch")
       read("Gemfile.lock").should include "1.0.1"
       `git status`.should include "nothing to commit"
     end
 
     it "does not bundle with --no-bundle" do
-      Bundler.with_clean_env { bump("patch --no-bundle") }
+      bump("patch --no-bundle")
       read(gemspec).should include "1.0.1"
       read("Gemfile.lock").should include "1.0.0"
       `git status --porcelain`.should include "?? Gemfile.lock"
     end
 
     it "does not bundle or commit an untracked Gemfile.lock" do
-      Bundler.with_clean_env { bump("patch") }
+      bump("patch")
       read("Gemfile.lock").should include "1.0.0"
       `git status --porcelain`.should include "?? Gemfile.lock"
     end
