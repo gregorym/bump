@@ -90,7 +90,7 @@ module Bump
 
     def self.replace(file, old, new)
       content = File.read(file)
-      File.open(file, "w"){|f| f.write(content.gsub(old, new)) }
+      File.open(file, "w"){|f| f.write(content.sub(old, new)) }
     end
 
     def self.current_info
