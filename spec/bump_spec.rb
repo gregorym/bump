@@ -106,6 +106,21 @@ describe Bump do
       bump("patch").should include("4.2.11")
       read(gemspec).should include('s.version = "4.2.11"')
     end
+
+    it "should not bump multiple versions" do
+      version = '"4.2.3"'
+      write gemspec, <<-RUBY
+        Gem::Specification.new do |s|
+          s.name    = 'fixture'
+          s.version = #{version}
+          s.summary = 'Fixture gem'
+          s.runtime_dependency 'rake', #{version}
+        end
+      RUBY
+      bump("patch").should include("4.2.4")
+      read(gemspec).should include('s.version = "4.2.4"')
+      read(gemspec).should include("'rake', #{version}")
+    end
   end
 
   context ".version in gemspec within the initializer" do
