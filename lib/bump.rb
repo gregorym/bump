@@ -95,9 +95,9 @@ module Bump
 
     def self.current_info
       version, file = (
+        version_from_version ||
         version_from_version_rb ||
         version_from_gemspec ||
-        version_from_version ||
         version_from_lib_rb  ||
         version_from_chef  ||
         raise(UnfoundVersionFileError)

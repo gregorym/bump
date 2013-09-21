@@ -215,12 +215,12 @@ describe Bump do
     end
 
     it "should bump if a gemspec & version.rb exists and leave it alone" do
-      write_gemspec "File.read('VERSION')"
+      write_gemspec "'1.2.0'"
       write_version_file "File.read('VERSION')"
       bump("minor").should include("1.3.0")
       read("VERSION").should include("1.3.0")
       read(version_file).should include("VERSION = File.read('VERSION')")
-      read(gemspec).should include("version = File.read('VERSION')")
+      read(gemspec).should include("version = '1.2.0'")
     end
 
     context "with pre-release identifier" do
