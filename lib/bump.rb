@@ -14,7 +14,8 @@ module Bump
     def self.defaults
       {
         :commit => true,
-        :bundle => File.exist?("Gemfile")
+        :bundle => File.exist?("Gemfile"),
+        :tag => false
       }
     end
 
@@ -86,6 +87,7 @@ module Bump
       return unless File.directory?(".git")
       system("git add --update Gemfile.lock") if options[:bundle]
       system("git add --update #{file} && git commit -m 'v#{version}'")
+      system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
     end
 
     def self.replace(file, old, new)

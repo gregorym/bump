@@ -63,6 +63,20 @@ describe Bump do
       `git log -1 --pretty=format:'%s'`.should == "initial"
       `git status`.should include "Untracked files:"
     end
+
+    it "should tag the version if --tag flag given" do
+      write_gemspec
+
+      bump("patch --tag")
+      `git tag -l`.should include 'v4.2.4'
+    end
+
+    it "should not tag the version if --no-commit and --tag flag given" do
+      write_gemspec
+
+      bump("patch --no-commit --tag")
+      `git tag -l`.should == ''
+    end
   end
 
   context ".version in gemspec" do
@@ -403,7 +417,8 @@ describe Bump do
   private
 
   def bump(command="", options={})
-    run "#{File.expand_path("../../bin/bump", __FILE__)} #{command}", options
+    cmdline = "#{File.expand_path("../../bin/bump", __FILE__)} #{command}"
+    run cmdline, options
   end
 
   def write_gemspec(version = '"4.2.3"')
