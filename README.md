@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gregorym/bump.png)](https://travis-ci.org/gregorym/bump)
+
 # Introduction
 Bump is a gem that will simplify the way you build gems and chef-cookbooks.
 
@@ -67,6 +69,3 @@ Bump::Bump.current        # -> "1.2.3"
 # Author
 Gregory<br/>
 License: MIT<br/>
-[![Build Status](https://travis-ci.org/gregorym/bump.png)](https://travis-ci.org/gregorym/bump)
-
-
