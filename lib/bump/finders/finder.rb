@@ -3,22 +3,8 @@ module Bump
     class Finder
       attr_accessor :file_name
 
-      def initialize(path="")
-        @file_name = path
-      end
-
-      def version_regex
-        ::Bump::VERSION_REGEX
-      end
-
-      def find_version_file
-        files = Dir.glob(file_name)
-        case files.size
-        when 0 then nil
-        when 1 then files.first
-        else
-          raise TooManyVersionFilesError
-        end
+      def initialize(file_name="")
+        @file_name = file_name
       end
 
       def file
@@ -30,8 +16,23 @@ module Bump
       end
 
       def match
-        return unless version
-        [version, file]
+        [version, file] if file && version
+      end
+
+    private
+
+      def find_version_file
+        files = Dir.glob(file_name)
+        case files.size
+        when 0 then nil
+        when 1 then files.first
+        else
+          raise TooManyVersionFilesError
+        end
+      end
+
+      def version_regex
+        ::Bump::VERSION_REGEX
       end
     end
   end

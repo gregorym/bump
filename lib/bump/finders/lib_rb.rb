@@ -3,7 +3,7 @@ module Bump
     class LibRb < Bump::Finders::Finder
       attr_accessor :version
 
-      def find_version_file
+      def file
         @file ||= begin
           Dir.glob("lib/**/*.rb").detect do |f|
             match = File.read(f).match /^\s+VERSION = ['"](#{version_regex})['"]/i
@@ -11,10 +11,6 @@ module Bump
             match
           end
         end
-      end
-
-      def match
-        [version, file] if file
       end
     end
   end
