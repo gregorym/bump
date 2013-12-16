@@ -1,3 +1,8 @@
+require 'bump/finders/finder'
+require 'bump/finders/chef'
+require 'bump/finders/gemspec'
+require 'bump/finders/lib_rb'
+
 module Bump
   class InvalidOptionError < StandardError; end
   class InvalidVersionError < StandardError; end
@@ -5,11 +10,14 @@ module Bump
   class TooManyVersionFilesError < StandardError; end
   class UnfoundVersionFileError < StandardError; end
 
+  PRERELEASE    = ["alpha","beta","rc",nil]
+  VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
+
+
   class Bump
     BUMPS         = %w(major minor patch pre)
-    PRERELEASE    = ["alpha","beta","rc",nil]
+
     OPTIONS       = BUMPS | ["set", "current"]
-    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
     def self.defaults
       {
@@ -109,49 +117,23 @@ module Bump
     end
 
     def self.version_from_gemspec
-      return unless file    = find_version_file("*.gemspec")
-      version               = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
-      return unless version = File.read(file)[/Gem::Specification.new.+ ["']#{VERSION_REGEX}["']/, 1] if version.nil?
-      [version, file]
+      Finders::Gemspec.new.match
     end
 
     def self.version_from_version_rb
-      return unless file = find_version_file("lib/**/version.rb")
-      extract_version_from_file(file)
+      Finders::Finder.new("lib/**/version.rb").match
     end
 
     def self.version_from_version
-      return unless file = find_version_file("VERSION")
-      extract_version_from_file(file)
+      Finders::Finder.new("VERSION").match
     end
 
     def self.version_from_lib_rb
-      files = Dir.glob("lib/**/*.rb")
-      file = files.detect do |file|
-        File.read(file) =~ /^\s+VERSION = ['"](#{VERSION_REGEX})['"]/i
-      end
-      [$1, file] if file
+      Finders::LibRb.new.match
     end
 
     def self.version_from_chef
-      file = find_version_file("metadata.rb")
-      return unless file && File.read(file) =~ /^version\s+(['"])(#{VERSION_REGEX})['"]/
-      [$2, file]
-    end
-
-    def self.extract_version_from_file(file)
-      return unless version = File.read(file)[VERSION_REGEX]
-      [version, file]
-    end
-
-    def self.find_version_file(pattern)
-      files = Dir.glob(pattern)
-      case files.size
-      when 0 then nil
-      when 1 then files.first
-      else
-        raise TooManyVersionFilesError
-      end
+      Finders::Chef.new.match
     end
 
     def self.next_version(current, part)
@@ -178,5 +160,7 @@ module Bump
       @all_files ||= `git ls-files`.split(/\r?\n/)
       @all_files.include?(file)
     end
+
   end
 end
+
