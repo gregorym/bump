@@ -1,16 +1,22 @@
 module Bump
   module Finders
-    class LibRb < Bump::Finders::Finder
-      attr_accessor :version
+    class LibRb < Bump::Finders::GenericFile
 
+      # Finds the first file that has a compatible VERSION constant
       def file
-        @file ||= begin
-          Dir.glob("lib/**/*.rb").detect do |f|
-            match = File.read(f).match /^\s+VERSION = ['"](#{version_regex})['"]/i
-            self.version = match[1] if match
-            match
-          end
-        end
+        @file ||= Dir.glob("lib/**/*.rb").detect { |f| find_version(f) }
+      end
+
+      # Find a compatible version string in the file
+      def version
+        @version ||= find_version(file)[1]
+      end
+
+    private
+
+      # Reads file and returns a version regex match
+      def find_version(file)
+        File.read(file).match /^\s+VERSION = ['"](#{version_regex})['"]/i
       end
     end
   end
