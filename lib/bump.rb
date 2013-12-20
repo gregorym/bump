@@ -1,4 +1,4 @@
-require 'bump/finders/finder'
+require 'bump/finders/generic_file'
 require 'bump/finders/chef'
 require 'bump/finders/gemspec'
 require 'bump/finders/lib_rb'
@@ -121,11 +121,11 @@ module Bump
     end
 
     def self.version_from_version_rb
-      Finders::Finder.new("lib/**/version.rb").match
+      Finders::GenericFile.new("lib/**/version.rb").match
     end
 
     def self.version_from_version
-      Finders::Finder.new("VERSION").match
+      Finders::GenericFile.new("VERSION").match
     end
 
     def self.version_from_lib_rb
