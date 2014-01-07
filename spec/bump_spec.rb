@@ -299,7 +299,7 @@ describe Bump do
     before do
       write_gemspec('"1.0.0"')
       write "Gemfile", <<-RUBY
-        source :rubygems
+        source 'https://rubygems.org'
         gem "parallel" # a gem not in the Gemfile used to run this test
         gemspec
       RUBY
