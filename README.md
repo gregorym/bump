@@ -27,7 +27,7 @@ Bump version 0.1.2 to 0.1.3
 
 ### --no-commit
 If you don't want to make a commit after bumping, add the `--no-commit` option.
-    
+
     bump patch --no-commit
 
 ### --tag
@@ -37,7 +37,7 @@ Will add a git tag (if the current project is a git repository and `--no-commit`
 
 ### --no-bundle
 If you don't want to run the `bundle` command after bumping, add the `--no-bundle` option.
-    
+
     bump patch --no-bundle
 
 ### Rake
@@ -55,7 +55,7 @@ require "bump/tasks"
 require "bump"
 Bump::Bump.current        # -> "1.2.3"
 Bump::Bump.run("patch")   # -> version changed
-Bump::Bump.run("patch", commit: false, bundle:false, tag:false) # -> version changed with options
+Bump::Bump.run("patch", commit: false, bundle: false, tag: false) # -> version changed with options
 ```
 
 # Supported locations

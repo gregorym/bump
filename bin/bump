@@ -32,6 +32,6 @@ if ARGV.first == "set"
 end
 
 require File.dirname(__FILE__) + '/../lib/bump'
-output, status = Bump::Bump.run(ARGV.first, options)
+output, status = Bump.run(ARGV.first, options)
 puts output
 exit status
