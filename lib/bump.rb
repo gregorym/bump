@@ -16,7 +16,6 @@ module Bump
 
   class Bump
     BUMPS         = %w(major minor patch pre)
-
     OPTIONS       = BUMPS | ["set", "current"]
 
     def self.defaults
@@ -104,36 +103,20 @@ module Bump
     end
 
     def self.current_info
-      version, file = (
-        version_from_version ||
-        version_from_version_rb ||
-        version_from_gemspec ||
-        version_from_lib_rb  ||
-        version_from_chef  ||
-        raise(UnfoundVersionFileError)
-      )
+      version, file = version_finders.map(&:match).compact.first
+      raise UnfoundVersionFileError unless file
       raise UnfoundVersionError unless version
       [version, file]
     end
 
-    def self.version_from_gemspec
-      Finders::Gemspec.new.match
-    end
-
-    def self.version_from_version_rb
-      Finders::GenericFile.new("lib/**/version.rb").match
-    end
-
-    def self.version_from_version
-      Finders::GenericFile.new("VERSION").match
-    end
-
-    def self.version_from_lib_rb
-      Finders::LibRb.new.match
-    end
-
-    def self.version_from_chef
-      Finders::Chef.new.match
+    def self.version_finders
+      [
+        Finders::GenericFile.new("VERSION"),
+        Finders::GenericFile.new("lib/**/version.rb"),
+        Finders::Gemspec.new,
+        Finders::LibRb.new,
+        Finders::Chef.new
+      ]
     end
 
     def self.next_version(current, part)
