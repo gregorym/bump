@@ -52,8 +52,9 @@ require "bump/tasks"
 ### Ruby
 ```Ruby
 require "bump"
-Bump::Bump.run("patch")   # -> version changed
 Bump::Bump.current        # -> "1.2.3"
+Bump::Bump.run("patch")   # -> version changed
+Bump::Bump.run("patch", {commit: false, bundle:false, tag:false}) # -> version changed with options
 ```
 
 # Supported locations
