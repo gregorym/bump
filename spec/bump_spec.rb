@@ -427,6 +427,7 @@ describe Bump do
         s.name    = 'fixture'
         s.version = #{version}
         s.summary = 'Fixture gem'
+        s.author  = 'John Doe'
       end
         RUBY
   end
