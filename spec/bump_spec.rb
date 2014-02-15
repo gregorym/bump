@@ -311,7 +311,7 @@ describe Bump do
       `git add Gemfile.lock`
       bump("patch")
       read("Gemfile.lock").should include "1.0.1"
-      `git status`.should include "nothing to commit"
+      `git status`.should include "nothing added to commit"
     end
 
     it "does not bundle with --no-bundle" do
@@ -427,6 +427,7 @@ describe Bump do
         s.name    = 'fixture'
         s.version = #{version}
         s.summary = 'Fixture gem'
+        s.author  = 'John Doe'
       end
         RUBY
   end
