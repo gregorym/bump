@@ -299,7 +299,7 @@ describe Bump do
     before do
       write_gemspec('"1.0.0"')
       write "Gemfile", <<-RUBY
-        source 'https://rubygems.org'
+        source :rubygems
         gem "parallel" # a gem not in the Gemfile used to run this test
         gemspec
       RUBY
@@ -331,7 +331,7 @@ describe Bump do
   context ".current" do
     it "returns the version as a string" do
       write_gemspec
-      Bump::Bump.current.should == "4.2.3"
+      Bump.current.should == "4.2.3"
     end
   end
 

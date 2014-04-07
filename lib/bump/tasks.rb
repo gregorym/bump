@@ -2,12 +2,12 @@ require "bump"
 
 namespace :bump do
   run_bump = lambda do |bump, options|
-    output, status = Bump::Bump.run(bump, options)
+    output, status = Bump.run(bump, options)
     puts output
     abort unless status == 0
   end
 
-  (Bump::Bump::BUMPS + ["current"]).each do |bump|
+  (Bump::BUMPS + ["current"]).each do |bump|
     if bump == "current"
       desc "Show current gem version"
     else
