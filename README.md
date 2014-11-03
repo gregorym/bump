@@ -56,6 +56,7 @@ require "bump"
 Bump::Bump.current        # -> "1.2.3"
 Bump::Bump.run("patch")   # -> version changed
 Bump::Bump.run("patch", commit: false, bundle:false, tag:false) # -> version changed with options
+Bump::Bump.run("patch", commit_message: '[no ci]') # -> creates a commit message with 'v1.2.3 [no ci]' instead of default: 'v1.2.3'
 ```
 
 # Supported locations
