@@ -40,6 +40,11 @@ If you don't want to run the `bundle` command after bumping, add the `--no-bundl
     
     bump patch --no-bundle
 
+### --commit-message [MSG]
+If you want to append additional information to the commit message, pass it in using the `--commit-message [MSG]` option.
+
+    bump patch --commit-message [no-ci]
+
 ### Rake
 
 ```Ruby
