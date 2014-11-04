@@ -40,6 +40,11 @@ If you don't want to run the `bundle` command after bumping, add the `--no-bundl
     
     bump patch --no-bundle
 
+### --commit-message [MSG]
+If you want to append additional information to the commit message, pass it in using the `--commit-message [MSG]` option.
+
+    bump patch --commit-message [no-ci]
+
 ### Rake
 
 ```Ruby
@@ -56,6 +61,7 @@ require "bump"
 Bump::Bump.current        # -> "1.2.3"
 Bump::Bump.run("patch")   # -> version changed
 Bump::Bump.run("patch", commit: false, bundle:false, tag:false) # -> version changed with options
+Bump::Bump.run("patch", commit_message: '[no ci]') # -> creates a commit message with 'v1.2.3 [no ci]' instead of default: 'v1.2.3'
 ```
 
 # Supported locations
