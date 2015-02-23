@@ -14,6 +14,15 @@ describe "rake bump" do
     output.should include("1.3.0")
     read("VERSION").should == "1.3.0\n"
     `git log -1 --pretty=format:'%s'`.should == "v1.3.0"
+    `git tag`.should_not include "v1.3.0"
+  end
+
+  it "bumps a version and tags" do
+    output = run "rake bump:minor:tag"
+    output.should include("1.3.0")
+    read("VERSION").should == "1.3.0\n"
+    `git log -1 --pretty=format:'%s'`.should == "v1.3.0"
+    `git tag`.should include "v1.3.0"
   end
 
   it "sets a version" do
