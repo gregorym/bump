@@ -16,6 +16,16 @@ describe "rake bump" do
     `git log -1 --pretty=format:'%s'`.should == "v1.3.0"
   end
 
+  it "bumps a version and can optionally tag it" do
+    run "rake bump:patch[true]"
+    `git tag`.split("\n").last.should == "v1.2.4"
+  end
+
+  it "does not tag by default" do
+    run "rake bump:patch"
+    `git tag`.split("\n").last.should be_nil
+  end
+
   it "sets a version" do
     output = run "VERSION=1.3.0 rake bump:set"
     output.should include("1.3.0")
