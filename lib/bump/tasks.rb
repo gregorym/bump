@@ -13,9 +13,17 @@ namespace :bump do
     else
       desc "Bump #{bump} part of gem version"
     end
-
     task bump do
       run_bump.call(bump, {})
+    end
+
+    if bump != "current"
+      namespace bump do
+        desc "bump and tag #{bump}"
+        task :tag do
+          run_bump.call(bump, :tag => true)
+        end
+      end
     end
   end
 
