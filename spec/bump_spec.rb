@@ -300,7 +300,8 @@ describe Bump do
       write_gemspec('"1.0.0"')
       write "Gemfile", <<-RUBY
         source 'https://rubygems.org'
-        gem "parallel" # a gem not in the Gemfile used to run this test
+        # a gem not in the Gemfile used to run this test
+        gem 'a1330ks_bmi', '~> 0.0.1'
         gemspec
       RUBY
       `git add Gemfile #{gemspec}`
@@ -424,6 +425,7 @@ describe Bump do
   def write_gemspec(version = '"4.2.3"')
     write gemspec, <<-RUBY.sub(" "*6, "")
       Gem::Specification.new do |s|
+        s.author  = 'joe'
         s.name    = 'fixture'
         s.version = #{version}
         s.summary = 'Fixture gem'

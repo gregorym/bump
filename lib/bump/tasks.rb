@@ -14,8 +14,8 @@ namespace :bump do
       desc "Bump #{bump} part of gem version"
     end
 
-    task bump do
-      run_bump.call(bump, {})
+    task bump, :tag do |_task, args|
+      run_bump.call(bump, :tag => args[:tag])
     end
   end
 
