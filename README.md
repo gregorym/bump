@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/gregorym/bump.png)](https://travis-ci.org/gregorym/bump)
 [![Gem Version](https://badge.fury.io/rb/bump.png)](http://badge.fury.io/rb/bump)
-
+a
 # Introduction
 Bump is a gem that will simplify the way you build gems and chef-cookbooks.
 
