@@ -43,8 +43,6 @@ module Bump
       ["Unable to find a file with the gem version", 1]
     rescue TooManyVersionFilesError
       ["More than one gemspec file", 1]
-    rescue Exception => e
-      ["Something wrong happened: #{e.message}\n#{e.backtrace.join("\n")}", 1]
     end
 
     def self.current
