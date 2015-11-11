@@ -119,12 +119,11 @@ module Bump
 
     def self.version_from_version_rb
       files = Dir.glob("lib/**/version.rb")
-      files.each do |file|
-        if version = extract_version_from_file(file)
-          return [version, file]
+      files.detect do |file|
+        if version_and_file = extract_version_from_file(file)
+          return version_and_file
         end
       end
-      nil
     end
 
     def self.version_from_version
