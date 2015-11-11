@@ -118,8 +118,13 @@ module Bump
     end
 
     def self.version_from_version_rb
-      return unless file = find_version_file("lib/**/version.rb")
-      extract_version_from_file(file)
+      files = Dir.glob("lib/**/version.rb")
+      files.each do |file|
+        if version = extract_version_from_file(file)
+          return [version, file]
+        end
+      end
+      nil
     end
 
     def self.version_from_version

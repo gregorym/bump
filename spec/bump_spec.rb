@@ -168,6 +168,12 @@ describe Bump do
       read(version_file).should include('  VERSION = "1.2.3"')
     end
 
+    it "allows multiple" do
+      Dir.mkdir "lib/foo/client"
+      File.write("lib/foo/client/version.rb", "SomethingElse")
+      bump("current").should include("1.2.3")
+    end
+
     it "should bump VERSION" do
       bump("minor").should include("1.3.0")
       read(version_file).should include('  VERSION = "1.3.0"')
