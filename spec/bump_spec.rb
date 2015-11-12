@@ -435,6 +435,7 @@ describe Bump do
         s.name    = 'fixture'
         s.version = #{version}
         s.summary = 'Fixture gem'
+        s.add_runtime_dependency 'parallel'
       end
     RUBY
   end
