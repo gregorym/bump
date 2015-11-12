@@ -436,7 +436,7 @@ describe Bump do
         s.version = #{version}
         s.summary = 'Fixture gem'
       end
-        RUBY
+    RUBY
   end
 
   def write_version_file(version = '"1.2.3"')
