@@ -42,7 +42,7 @@ module Bump
     rescue UnfoundVersionFileError
       ["Unable to find a file with the gem version", 1]
     rescue TooManyVersionFilesError
-      ["More than one gemspec file", 1]
+      ["More than one version file found (#{$!.message})", 1]
     end
 
     def self.current
@@ -156,7 +156,7 @@ module Bump
       when 0 then nil
       when 1 then files.first
       else
-        raise TooManyVersionFilesError
+        raise TooManyVersionFilesError, files.join(", ")
       end
     end
 
