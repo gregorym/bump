@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bump (0.5.2)
+    bump (0.5.3)
 
 GEM
   remote: https://rubygems.org/
@@ -26,6 +26,3 @@ DEPENDENCIES
   byebug
   rake (~> 10.0.0)
   rspec (~> 2.0)
-
-BUNDLED WITH
-   1.10.6
