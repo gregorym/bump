@@ -31,6 +31,7 @@ module SpecHelpers
               `git init && git commit --allow-empty -am 'initial'` # so we never accidentally do commit to the current repo
             when :mercurial
               `hg init && hg commit -m 'initial'` # so we never accidentally do commit to the current repo
+              File.write('.hg/hgrc', "[ui]\nusername = Jane Doe <jdoe@example.com>\n")
             else
               raise "unknown vcs #{vcs}"
           end
