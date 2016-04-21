@@ -1,3 +1,5 @@
+require 'bump/version_control'
+
 module Bump
   class InvalidOptionError < StandardError; end
   class InvalidVersionError < StandardError; end
@@ -175,5 +177,3 @@ module Bump
 
   end
 end
-
-require 'bump/version_control'
