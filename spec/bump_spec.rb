@@ -426,7 +426,7 @@ describe Bump do
       lambda { Bump::Bump.bump('foo','1.2.3','1.2.4',{}) }.should raise_error NoMethodError
     end
     it 'has private methods' do
-      Bump::Bump.private_methods(false).size.should > Object.private_methods(false)
+      Bump::Bump.private_methods(false).size.should > Object.private_methods(false).size
     end
   end
 
