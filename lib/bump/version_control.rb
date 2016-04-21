@@ -2,14 +2,6 @@ module Bump
   class VersionControlNotFoundError < StandardError; end
 
   class VersionControl
-    def self.git?
-      File.directory?(".git")
-    end
-
-    def self.mercurial?
-      File.directory?(".hg")
-    end
-
     def self.commit(version, file, options)
       case
       when git?
@@ -27,10 +19,6 @@ module Bump
       end
     end
 
-    def self.commit_message(version, options)
-      (options[:commit_message]) ? "v#{version} #{options[:commit_message]}" : "v#{version}"
-    end
-
     def self.under_version_control?(file)
       @all_files ||= case
       when git?
@@ -42,5 +30,21 @@ module Bump
       end
       @all_files.include?(file) if @all_files
     end
+
+    def self.git?
+      File.directory?(".git")
+    end
+    private_class_method :git?
+
+    def self.mercurial?
+      File.directory?(".hg")
+    end
+    private_class_method :mercurial?
+
+    def self.commit_message(version, options)
+      (options[:commit_message]) ? "v#{version} #{options[:commit_message]}" : "v#{version}"
+    end
+    private_class_method :commit_message
+
   end
 end

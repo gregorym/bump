@@ -5,16 +5,6 @@ describe Bump::VersionControl do
   context 'git' do
     inside_of_folder("spec/fixture", :git)
 
-    context 'recognize repository' do
-      it 'as git' do
-        Bump::VersionControl.git?.should == true
-      end
-
-      it 'not as mercurial' do
-        Bump::VersionControl.mercurial?.should == false
-      end
-    end
-
     context 'commit' do
       it "should commit the new version" do
         write 'tmpfile', 'test'
@@ -96,16 +86,6 @@ describe Bump::VersionControl do
 
   context 'hg' do
     inside_of_folder("spec/fixture", :mercurial)
-
-    context 'recognize repository' do
-      it 'as mercurial' do
-        Bump::VersionControl.mercurial?.should == true
-      end
-
-      it 'not as git' do
-        Bump::VersionControl.git?.should == false
-      end
-    end
 
     context 'commit' do
       it "should commit the new version" do
