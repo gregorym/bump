@@ -53,7 +53,7 @@ module Bump
 
     def self.bump(file, current, next_version, options)
       replace(file, current, next_version)
-      if options[:bundle] and under_version_control?("Gemfile.lock")
+      if options[:bundle] and VersionControl.under_version_control?("Gemfile.lock")
         bundler_with_clean_env do
           system("bundle")
         end
@@ -81,15 +81,8 @@ module Bump
       bump(file, current, next_version, options)
     end
 
-    def self.commit_message(version, options)
-      (options[:commit_message]) ? "v#{version} #{options[:commit_message]}" : "v#{version}"
-    end
-
     def self.commit(version, file, options)
-      return unless File.directory?(".git")
-      system("git add --update Gemfile.lock") if options[:bundle]
-      system("git add --update #{file} && git commit -m '#{commit_message(version, options)}'")
-      system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
+      VersionControl.commit(version, file, options)
     end
 
     def self.replace(file, old, new)
@@ -180,9 +173,7 @@ module Bump
       [version, prerelease].compact.join('-')
     end
 
-    def self.under_version_control?(file)
-      @all_files ||= `git ls-files`.split(/\r?\n/)
-      @all_files.include?(file)
-    end
   end
 end
+
+require 'bump/version_control'
