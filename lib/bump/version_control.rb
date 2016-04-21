@@ -13,15 +13,15 @@ module Bump
     def self.commit(version, file, options)
       case
       when git?
-        system("git add --update Gemfile.lock") if options[:bundle]
-        system("git add --update #{file} && git commit -m '#{commit_message(version, options)}'")
-        system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
+        `git add --update Gemfile.lock` if options[:bundle]
+        `git add --update #{file} && git commit -m '#{commit_message(version, options)}'`
+        `git tag -a -m 'Bump to v#{version}' v#{version}` if options[:tag]
       when mercurial?
         files = [file]
         files << 'Gemfile.lock' if options[:bundle]
         include_files = files.reduce([]) { |a, n| a << '-I' << n }.join(' ')
-        system("hg commit #{include_files} -m '#{commit_message(version, options)}'")
-        system("hg tag -m 'Bump to v#{version}' v#{version}") if options[:tag]
+        `hg commit #{include_files} -m '#{commit_message(version, options)}'`
+        `hg tag -m 'Bump to v#{version}' v#{version}` if options[:tag]
       else
         raise VersionControlNotFoundError
       end
