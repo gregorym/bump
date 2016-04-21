@@ -17,8 +17,10 @@ module Bump
         system("git add --update #{file} && git commit -m '#{commit_message(version, options)}'")
         system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
       when mercurial?
-        system("hg add Gemfile.lock") if options[:bundle]
-        system("hg add #{file} && hg commit -m '#{commit_message(version, options)}'")
+        files = [file]
+        files << 'Gemfile.lock' if options[:bundle]
+        include_files = files.reduce([]) { |a, n| a << '-I' << n }.join(' ')
+        system("hg commit #{include_files} -m '#{commit_message(version, options)}'")
         system("hg tag -m 'Bump to v#{version}' v#{version}") if options[:tag]
       else
         raise VersionControlNotFoundError
@@ -30,11 +32,11 @@ module Bump
     end
 
     def self.under_version_control?(file)
-      case
+      @all_files ||= case
       when git?
-        @all_files ||= `git ls-files`.split(/\r?\n/)
+        `git ls-files`.split(/\r?\n/)
       when mercurial?
-        @all_files ||= `hg manifest`.split(/\r?\n/)
+        `hg manifest`.split(/\r?\n/)
       else
         raise VersionControlNotFoundError
       end
