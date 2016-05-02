@@ -303,6 +303,9 @@ describe Bump do
 
   context "with a Gemfile" do
     before do
+      write '.gitignore', '.bundle/'
+      `git add .gitignore`
+      `git commit -m "gitignore"`
       write_gemspec('"1.0.0"')
       write "Gemfile", <<-RUBY
         source 'https://rubygems.org'
