@@ -50,6 +50,12 @@ If you want to append additional information to the commit message, pass it in u
 ```Ruby
 # Rakefile
 require "bump/tasks"
+
+#
+# if you want to always tag the verison, add:
+# Bump.tag_by_default = true
+#
+
 ```
 
     rake bump:patch
