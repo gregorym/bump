@@ -15,7 +15,7 @@ namespace :bump do
     end
 
     task bump, :tag do |_task, args|
-      run_bump.call(bump, :tag => args[:tag])
+      run_bump.call(bump, args)
     end
   end
 
