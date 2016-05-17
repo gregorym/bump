@@ -5,7 +5,9 @@ describe "rake bump" do
 
   before do
     write "VERSION", "1.2.3\n"
-    write "Rakefile", "require File.expand_path('../../../lib/bump/tasks', __FILE__)"
+    rakefile_require = "require File.expand_path('../../../lib/bump/tasks', __FILE__)"
+    write "Rakefile", rakefile_require
+    write "Rakefile.with_defaults", "#{rakefile_require}\nBump.tag_by_default = true"
     raise unless system("git add VERSION")
   end
 
@@ -18,6 +20,11 @@ describe "rake bump" do
 
   it "bumps a version and can optionally tag it" do
     run "rake bump:patch[true]"
+    `git tag`.split("\n").last.should == "v1.2.4"
+  end
+
+  it "honors the tag setting in Bump::Bump.defaults" do
+    run "rake -f Rakefile.with_defaults bump:patch"
     `git tag`.split("\n").last.should == "v1.2.4"
   end
 

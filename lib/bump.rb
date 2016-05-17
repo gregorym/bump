@@ -5,6 +5,10 @@ module Bump
   class TooManyVersionFilesError < StandardError; end
   class UnfoundVersionFileError < StandardError; end
 
+  class <<self
+    attr_accessor :tag_by_default
+  end
+
   class Bump
     BUMPS         = %w(major minor patch pre)
     PRERELEASE    = ["alpha","beta","rc",nil]
@@ -17,7 +21,7 @@ module Bump
         {
           :commit => true,
           :bundle => File.exist?("Gemfile"),
-          :tag => false
+          :tag => ::Bump.tag_by_default
         }
       end
   
