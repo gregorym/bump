@@ -21,6 +21,7 @@ module Bump
         {
           :commit => true,
           :bundle => File.exist?("Gemfile"),
+          :berks => File.exist?("Berksfile"),
           :tag => ::Bump.tag_by_default
         }
       end
@@ -64,6 +65,11 @@ module Bump
             system("bundle")
           end
         end
+        if options[:berks] and under_version_control?("Berksfile.lock")
+          bundler_with_clean_env do
+            system("berks")
+          end
+        end
         commit(next_version, file, options) if options[:commit]
         ["Bump version #{current} to #{next_version}", 0]
       end
@@ -75,7 +81,7 @@ module Bump
           yield
         end
       end
-  
+
       def bump_part(part, options)
         current, file = current_info
         next_version = next_version(current, part)
@@ -94,6 +100,7 @@ module Bump
       def commit(version, file, options)
         return unless File.directory?(".git")
         system("git add --update Gemfile.lock") if options[:bundle]
+        system("git add --update Berksfile.lock") if options[:berks]
         system("git add --update #{file} && git commit -m '#{commit_message(version, options)}'")
         system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
       end
