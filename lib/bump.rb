@@ -65,7 +65,6 @@ module Bump
             system("bundle")
           end
         end
-        puts "--> #{options[:berks]}"
         if options[:berks] and under_version_control?("Berksfile.lock")
           system("berks")
         end
