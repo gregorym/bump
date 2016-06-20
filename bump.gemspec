@@ -1,5 +1,5 @@
 Gem::Specification.new "bump" do |s|
-  s.version = "0.5.3"
+  s.version = "0.5.4"
   s.author = "Gregory Marcilhacy"
   s.email = "g.marcilhacy@gmail.com"
   s.homepage = "https://github.com/gregorym/bump"
@@ -12,6 +12,7 @@ Gem::Specification.new "bump" do |s|
 
   s.add_development_dependency 'rake', '~> 10.0.0'
   s.add_development_dependency 'rspec', '~> 2.0'
+  s.add_development_dependency 'berkshelf', '~> 4.0'
 end
 
 
