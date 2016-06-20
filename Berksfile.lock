@@ -1,7 +1,0 @@
-DEPENDENCIES
-  bar
-    path: .
-    metadata: true
-
-GRAPH
-  bar (1.0.0)

@@ -1,4 +1,5 @@
 require "bundler"
+require 'berkshelf'
 require "bump"
 
 module SpecHelpers
