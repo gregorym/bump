@@ -335,6 +335,41 @@ describe Bump do
     end
   end
 
+  context "with a Berksfile" do
+    let(:version) { "1.0.0" }
+    let(:version_file) { "metadata.rb" }
+
+    before do
+      write version_file, "name 'bar'\nversion '#{version}'\n"
+      write "Berksfile", <<-RUBY
+        source 'https://supermarket.chef.io'
+        metadata
+      RUBY
+      `git add Berksfile #{version_file}`
+      run("berks")
+    end
+
+    it "berks to keep version up to date and commit changed Berksfile.lock" do
+      `git add Berksfile.lock`
+      bump("patch")
+      read("Berksfile.lock").should include "1.0.1"
+      `git status`.should include "nothing to commit"
+    end
+
+    it "does not berks with --no-berks" do
+      bump("patch --no-berks")
+      read(version_file).should include "1.0.1"
+      read("Berksfile.lock").should include "1.0.0"
+      `git status --porcelain`.should include "?? Berksfile.lock"
+    end
+
+    it "does not berks or commit an untracked Berksfile.lock" do
+      bump("patch")
+      read("Berksfile.lock").should include "1.0.0"
+      `git status --porcelain`.should include "?? Berksfile.lock"
+    end
+  end
+
   context ".current" do
     it "returns the version as a string" do
       write_gemspec

@@ -12,6 +12,7 @@ Gem::Specification.new "bump" do |s|
 
   s.add_development_dependency 'rake', '~> 10.0.0'
   s.add_development_dependency 'rspec', '~> 2.0'
+  s.add_development_dependency 'berkshelf', '~> 4.3'
 end
 
 

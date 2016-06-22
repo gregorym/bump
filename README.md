@@ -39,6 +39,11 @@ Will add a git tag (if the current project is a git repository and `--no-commit`
 If you don't want to run the `bundle` command after bumping, add the `--no-bundle` option.
     
     bump patch --no-bundle
+    
+### --no-berks
+If you don't want to run the `berks` command after bumping, add the `--no-berks` option.
+    
+    bump patch --no-berks
 
 ### --commit-message [MSG]
 If you want to append additional information to the commit message, pass it in using the `--commit-message [MSG]` option.
