@@ -66,9 +66,7 @@ module Bump
           end
         end
         if options[:berks] and under_version_control?("Berksfile.lock")
-          bundler_with_clean_env do
-            system("berks")
-          end
+          system("berks")
         end        
         commit(next_version, file, options) if options[:commit]
         ["Bump version #{current} to #{next_version}", 0]
