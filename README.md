@@ -75,10 +75,7 @@ Bump::Bump.run("patch", commit_message: '[no ci]') # -> creates a commit message
  - gemspec with `gem.version = "1.2.3"` or `Gem:Specification.new "gem-name", "1.2.3" do`
  - lib/**/version.rb file with `VERSION = "1.2.3"`
  - metadata.rb with `version "1.2.3"`
-
-# Todo
-
- - `VERSION = "1.2.3"` in lib/*.rb
+ - `VERSION = "1.2.3"` in lib/**/*.rb
 
 # Author
 Gregory<br/>
