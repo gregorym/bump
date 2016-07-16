@@ -17,7 +17,7 @@ Usage:
 Options:
 BANNER
   opts.on("--no-commit", "Do not make a commit.") { options[:commit] = false }
-  opts.on("--commit-message [MSG]", "Append MSG to the commit message.") {|msg| options[:commit_message] = msg }
+  opts.on("-m","--commit-message [MSG]", "Append MSG to the commit message.") {|msg| options[:commit_message] = msg }
   opts.on("--no-bundle", "Do not bundle.") { options[:bundle] = false }
   opts.on("--tag", "Create git tag from version (only if commit is true).") { options[:tag] = true }
   opts.on("-h", "--help","Show this.") { puts opts; exit }

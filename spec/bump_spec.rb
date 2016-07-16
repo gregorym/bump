@@ -45,6 +45,26 @@ describe Bump do
       `git status`.should include "nothing to commit"
     end
 
+    it "should append commit message if --commit-message flag was given" do
+      write_gemspec
+      `git add #{gemspec}`
+
+      bump("patch --commit-message 'Commit message.'")
+
+      `git log -1 --pretty=format:'%s'`.should include "Commit message."
+      `git status`.should include "nothing to commit"
+    end
+
+    it "should append commit message if -m flag gas given" do
+      write_gemspec
+      `git add #{gemspec}`
+
+      bump("patch -m 'Commit message.'")
+
+      `git log -1 --pretty=format:'%s'`.should include "Commit message."
+      `git status`.should include "nothing to commit"
+    end
+
     it "should not commit if --no-commit flag was given" do
       write_gemspec
       `git add #{gemspec}`
