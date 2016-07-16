@@ -1,3 +1,5 @@
+require 'bump/version_control'
+
 module Bump
   class InvalidOptionError < StandardError; end
   class InvalidVersionError < StandardError; end
@@ -54,12 +56,12 @@ module Bump
       def current
         current_info.first
       end
-  
+
       private
   
       def bump(file, current, next_version, options)
         replace(file, current, next_version)
-        if options[:bundle] and under_version_control?("Gemfile.lock")
+        if options[:bundle] and VersionControl.under_version_control?("Gemfile.lock")
           bundler_with_clean_env do
             system("bundle")
           end
@@ -87,15 +89,8 @@ module Bump
         bump(file, current, next_version, options)
       end
   
-      def commit_message(version, options)
-        (options[:commit_message]) ? "v#{version} #{options[:commit_message]}" : "v#{version}"
-      end
-  
       def commit(version, file, options)
-        return unless File.directory?(".git")
-        system("git add --update Gemfile.lock") if options[:bundle]
-        system("git add --update #{file} && git commit -m '#{commit_message(version, options)}'")
-        system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
+        VersionControl.commit(version, file, options)
       end
   
       def replace(file, old, new)
@@ -186,10 +181,6 @@ module Bump
         [version, prerelease].compact.join('-')
       end
   
-      def under_version_control?(file)
-        @all_files ||= `git ls-files`.split(/\r?\n/)
-        @all_files.include?(file)
-      end
     end
   end
 end

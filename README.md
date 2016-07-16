@@ -31,7 +31,7 @@ If you don't want to make a commit after bumping, add the `--no-commit` option.
     bump patch --no-commit
 
 ### --tag
-Will add a git tag (if the current project is a git repository and `--no-commit` has not been given).
+Will add a scm tag (if the current project is a git or mercurial repository and `--no-commit` has not been given).
 
     bump patch --tag
 

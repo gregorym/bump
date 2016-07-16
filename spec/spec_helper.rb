@@ -21,12 +21,20 @@ module SpecHelpers
   end
 
   module ClassMethods
-    def inside_of_folder(folder)
+    def inside_of_folder(folder, vcs = :git)
       folder = File.expand_path(folder, File.dirname(File.dirname(__FILE__)))
       around do |example|
         run "rm -rf #{folder} && mkdir #{folder}"
         Dir.chdir folder do
-          `git init && git commit --allow-empty -am 'initial'` # so we never accidentally do commit to the current repo
+          case vcs
+            when :git
+              `git init && git commit --allow-empty -am 'initial'` # so we never accidentally do commit to the current repo
+            when :mercurial
+              `hg init && hg commit -m 'initial'` # so we never accidentally do commit to the current repo
+              File.write('.hg/hgrc', "[ui]\nusername = Jane Doe <jdoe@example.com>\n")
+            else
+              raise "unknown vcs #{vcs}"
+          end
           example.call
         end
         run "rm -rf #{folder}"
