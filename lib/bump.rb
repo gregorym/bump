@@ -24,10 +24,10 @@ module Bump
           :tag => ::Bump.tag_by_default
         }
       end
-  
+
       def run(bump, options={})
         options = defaults.merge(options)
-  
+
         case bump
         when *BUMPS
           bump_part(bump, options)
@@ -50,13 +50,13 @@ module Bump
       rescue TooManyVersionFilesError
         ["More than one version file found (#{$!.message})", 1]
       end
-  
+
       def current
         current_info.first
       end
-  
+
       private
-  
+
       def bump(file, current, next_version, options)
         replace(file, current, next_version)
         if options[:bundle] and under_version_control?("Gemfile.lock")
@@ -67,7 +67,7 @@ module Bump
         commit(next_version, file, options) if options[:commit]
         ["Bump version #{current} to #{next_version}", 0]
       end
-  
+
       def bundler_with_clean_env(&block)
         if defined?(Bundler)
           Bundler.with_clean_env(&block)
@@ -75,34 +75,34 @@ module Bump
           yield
         end
       end
-  
+
       def bump_part(part, options)
         current, file = current_info
         next_version = next_version(current, part)
         bump(file, current, next_version, options)
       end
-  
+
       def bump_set(next_version, options)
         current, file = current_info
         bump(file, current, next_version, options)
       end
-  
+
       def commit_message(version, options)
         (options[:commit_message]) ? "v#{version} #{options[:commit_message]}" : "v#{version}"
       end
-  
+
       def commit(version, file, options)
         return unless File.directory?(".git")
         system("git add --update Gemfile.lock") if options[:bundle]
         system("git add --update #{file} && git commit -m '#{commit_message(version, options)}'")
         system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
       end
-  
+
       def replace(file, old, new)
         content = File.read(file)
         File.open(file, "w"){|f| f.write(content.sub(old, new)) }
       end
-  
+
       def current_info
         version, file = (
           version_from_version ||
@@ -115,14 +115,14 @@ module Bump
         raise UnfoundVersionError unless version
         [version, file]
       end
-  
+
       def version_from_gemspec
         return unless file    = find_version_file("*.gemspec")
         version               = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
         return unless version = File.read(file)[/Gem::Specification.new.+ ["']#{VERSION_REGEX}["']/, 1] if version.nil?
         [version, file]
       end
-  
+
       def version_from_version_rb
         files = Dir.glob("lib/**/version.rb")
         files.detect do |file|
@@ -131,12 +131,12 @@ module Bump
           end
         end
       end
-  
+
       def version_from_version
         return unless file = find_version_file("VERSION")
         extract_version_from_file(file)
       end
-  
+
       def version_from_lib_rb
         files = Dir.glob("lib/**/*.rb")
         file = files.detect do |file|
@@ -144,18 +144,18 @@ module Bump
         end
         [$1, file] if file
       end
-  
+
       def version_from_chef
         file = find_version_file("metadata.rb")
         return unless file && File.read(file) =~ /^version\s+(['"])(#{VERSION_REGEX})['"]/
         [$2, file]
       end
-  
+
       def extract_version_from_file(file)
         return unless version = File.read(file)[VERSION_REGEX]
         [version, file]
       end
-  
+
       def find_version_file(pattern)
         files = Dir.glob(pattern)
         case files.size
@@ -165,7 +165,7 @@ module Bump
           raise TooManyVersionFilesError, files.join(", ")
         end
       end
-  
+
       def next_version(current, part)
         current, prerelease = current.split('-')
         major, minor, patch, *other = current.split('.')
@@ -185,7 +185,7 @@ module Bump
         version = [major, minor, patch, *other].compact.join('.')
         [version, prerelease].compact.join('-')
       end
-  
+
       def under_version_control?(file)
         @all_files ||= `git ls-files`.split(/\r?\n/)
         @all_files.include?(file)
