@@ -35,8 +35,19 @@ module SpecHelpers
   end
 end
 
+# See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
-  config.expect_with(:rspec) { |c| c.syntax = :should }
   config.include SpecHelpers::InstanceMethods
   config.extend SpecHelpers::ClassMethods
+
+  config.filter_run_when_matching :focus
+  config.example_status_persistence_file_path = "spec/examples.txt"
+  config.warnings = true
+  config.order = :random
+  Kernel.srand config.seed
+
+  config.expect_with :rspec do |expectations|
+    expectations.syntax = :should
+  end
+
 end
