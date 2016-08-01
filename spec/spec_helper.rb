@@ -1,4 +1,4 @@
-require "bundler"
+require "bundler/setup"
 require "bump"
 
 module SpecHelpers
