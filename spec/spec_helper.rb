@@ -35,7 +35,8 @@ module SpecHelpers
   end
 end
 
-RSpec.configure do |c|
-  c.include SpecHelpers::InstanceMethods
-  c.extend SpecHelpers::ClassMethods
+RSpec.configure do |config|
+  config.expect_with(:rspec) { |c| c.syntax = :should }
+  config.include SpecHelpers::InstanceMethods
+  config.extend SpecHelpers::ClassMethods
 end
