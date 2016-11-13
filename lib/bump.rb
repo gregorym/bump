@@ -20,7 +20,7 @@ module Bump
       def defaults
         {
           :commit => true,
-          :bundle => File.exist?("Gemfile"),
+          :bundle => (File.exist?("Gemfile") and Dir.glob('*.gemspec').any? and under_version_control?("Gemfile.lock")),
           :tag => ::Bump.tag_by_default
         }
       end
@@ -59,7 +59,7 @@ module Bump
 
       def bump(file, current, next_version, options)
         replace(file, current, next_version)
-        if options[:bundle] and Dir.glob('*.gemspec').any? and under_version_control?("Gemfile.lock")
+        if options[:bundle]
           bundler_with_clean_env do
             return ["Bundle error", 1] unless system("bundle")
           end
