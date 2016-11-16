@@ -59,9 +59,9 @@ module Bump
 
       def bump(file, current, next_version, options)
         replace(file, current, next_version)
-        if options[:bundle] and under_version_control?("Gemfile.lock")
+        if options[:bundle] and Dir.glob('*.gemspec').any? and under_version_control?("Gemfile.lock")
           bundler_with_clean_env do
-            system("bundle")
+            return ["Bundle error", 1] unless system("bundle")
           end
         end
         commit(next_version, file, options) if options[:commit]

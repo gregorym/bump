@@ -332,10 +332,10 @@ describe Bump do
       RUBY
       `git add Gemfile #{gemspec}`
       Bundler.with_clean_env { run("bundle") }
+      `git add Gemfile.lock`
     end
 
     it "bundle to keep version up to date and commit changed Gemfile.lock" do
-      `git add Gemfile.lock`
       bump("patch")
       read("Gemfile.lock").should include "1.0.1"
       `git status`.should include "nothing to commit"
@@ -345,10 +345,24 @@ describe Bump do
       bump("patch --no-bundle")
       read(gemspec).should include "1.0.1"
       read("Gemfile.lock").should include "1.0.0"
-      `git status --porcelain`.should include "?? Gemfile.lock"
+      `git status --porcelain`.should_not include "Gemfile.lock"
+    end
+
+    it "fails when it cannot bundle" do
+      File.write(gemspec, File.read(gemspec) + 'BLOB')
+      bump("patch", fail: true).should include "Bundle error"
+    end
+
+    it "does not bundle when not in a library" do
+      File.write('VERSION', '1.0.0')
+      File.unlink gemspec
+      bump("patch")
+      read("Gemfile.lock").should include "1.0.0"
+      `git status --porcelain`.should_not include "Gemfile.lock"
     end
 
     it "does not bundle or commit an untracked Gemfile.lock" do
+      `git reset Gemfile.lock`
       bump("patch")
       read("Gemfile.lock").should include "1.0.0"
       `git status --porcelain`.should include "?? Gemfile.lock"
