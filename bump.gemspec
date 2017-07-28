@@ -11,6 +11,6 @@ Gem::Specification.new "bump" do |s|
   s.executables = ["bump"]
 
   s.add_development_dependency 'bundler'
-  s.add_development_dependency 'rake', '~> 11.0'
-  s.add_development_dependency 'rspec', '~> 3.0'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec'
 end
