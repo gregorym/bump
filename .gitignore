@@ -2,3 +2,4 @@
 .bundle/
 .rspec
 bin/
+Gemfile.lock
