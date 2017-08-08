@@ -361,11 +361,21 @@ describe Bump do
       `git status --porcelain`.should_not include "Gemfile.lock"
     end
 
-    it "does not bundle or commit an untracked Gemfile.lock" do
-      `git reset Gemfile.lock`
-      bump("patch")
-      read("Gemfile.lock").should include "1.0.0"
-      `git status --porcelain`.should include "?? Gemfile.lock"
+    describe "with untracked Gemfile.lock" do
+      before { `git reset Gemfile.lock` }
+
+      it "does not bundle or commit" do
+        bump("patch")
+        read("Gemfile.lock").should include "1.0.0"
+        `git status --porcelain`.should include "?? Gemfile.lock"
+      end
+
+      it "bundles with --bundle even when not bundling by default" do
+        bump("patch --bundle")
+        read(gemspec).should include "1.0.1"
+        read("Gemfile.lock").should include "1.0.1"
+        `git status --porcelain`.should include "?? Gemfile.lock"
+      end
     end
   end
 
