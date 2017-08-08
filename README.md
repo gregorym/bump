@@ -56,7 +56,7 @@ or
 require "bump/tasks"
 
 #
-# if you want to always tag the verison, add:
+# if you want to always tag the version, add:
 # Bump.tag_by_default = true
 #
 
