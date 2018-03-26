@@ -19,13 +19,14 @@ module Bump
 
       def defaults
         {
+          :tag => ::Bump.tag_by_default,
           :commit => true,
-          :bundle => File.exist?("Gemfile"),
-          :tag => ::Bump.tag_by_default
+          :bundle => File.exist?("Gemfile")
         }
       end
 
       def run(bump, options={})
+        sanitize_options!(options)
         options = defaults.merge(options)
 
         case bump
@@ -56,6 +57,21 @@ module Bump
       end
 
       private
+
+      def sanitize_options!(options)
+        options.each do |key, value|
+          options[key] = eval_true_false_and_nil(value)
+        end
+        options.delete_if{|key, value| value.nil?}
+      end
+
+      def eval_true_false_and_nil(value)
+        if ["true", "false", "nil"].include? value
+          eval(value)
+        else
+          value
+        end
+      end
 
       def bump(file, current, next_version, options)
         replace(file, current, next_version)
