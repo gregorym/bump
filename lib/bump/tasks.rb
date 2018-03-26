@@ -15,6 +15,11 @@ namespace :bump do
     end
 
     task bump, Bump::Bump.defaults.keys do |_task, args|
+      args = {
+        tag: ENV['TAG'],
+        commit: ENV['COMMIT'],
+        bundle: ENV['BUNDLE']
+      }.merge(args)
       run_bump.call(bump, args)
     end
   end
