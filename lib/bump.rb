@@ -67,12 +67,9 @@ module Bump
 
       def parse_cli_options_value(value)
         case value
-        when "true"
-          true
-        when "false"
-          false
-        when "nil"
-          nil
+        when "true" then true
+        when "false" then false
+        when "nil" then nil
         else
           value
         end
