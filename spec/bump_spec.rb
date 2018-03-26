@@ -22,7 +22,10 @@ describe Bump do
   it "should fail with multiple gemspecs" do
     write_gemspec
     write("xxxx.gemspec", "Gem::Specification.new{}")
-    bump("current", :fail => true).should == "More than one version file found (fixture.gemspec, xxxx.gemspec)\n"
+    result = bump("current", :fail => true)
+    result.should include "More than one version file found"
+    result.should include "fixture.gemspec"
+    result.should include "xxxx.gemspec"
   end
 
   it "should fail if version is weird" do
