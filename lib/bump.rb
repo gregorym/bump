@@ -26,7 +26,7 @@ module Bump
       end
 
       def run(bump, options={})
-        sanitize_options!(options)
+        parse_cli_options!(options)
         options = defaults.merge(options)
 
         case bump
@@ -58,16 +58,21 @@ module Bump
 
       private
 
-      def sanitize_options!(options)
+      def parse_cli_options!(options)
         options.each do |key, value|
-          options[key] = eval_true_false_and_nil(value)
+          options[key] = parse_cli_options_value(value)
         end
         options.delete_if{|key, value| value.nil?}
       end
 
-      def eval_true_false_and_nil(value)
-        if ["true", "false", "nil"].include? value
-          eval(value)
+      def parse_cli_options_value(value)
+        case value
+        when "true"
+          true
+        when "false"
+          false
+        when "nil"
+          nil
         else
           value
         end

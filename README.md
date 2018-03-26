@@ -64,6 +64,8 @@ require "bump/tasks"
 
     rake bump:patch
     rake bump:current
+    rake bump:patch[false,true,false]    # passing {tag: false, commit: true, bundle: false} options
+    rake bump:minor[true,true,false]     # passing {tag: true, commit: true, bundle: false} options
 
 ### Ruby
 ```Ruby
