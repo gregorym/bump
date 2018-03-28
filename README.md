@@ -64,11 +64,8 @@ require "bump/tasks"
 
     rake bump:patch
     rake bump:current
-    rake bump:patch[false,true,false]              # passing {tag: false, commit: true, bundle: false} options
-    rake bump:patch TAG=false BUNDLE=false         # passing {tag: false, bundle: false} options
-    rake bump:minor[true,true,false]               # passing {tag: true, commit: true, bundle: false} options
-    rake bump:minor BUNDLE=false                   # passing {bundle: false} options
-    rake bump:major[true] PATCH=false              # argument option overrides corresponding option from env. variable, passing {tag: true} options
+    rake bump:patch COMMIT=true TAG=false BUNDLE=false
+    rake bump:minor BUNDLE=false
 
 ### Ruby
 ```Ruby

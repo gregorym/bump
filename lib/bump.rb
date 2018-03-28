@@ -4,6 +4,7 @@ module Bump
   class UnfoundVersionError < StandardError; end
   class TooManyVersionFilesError < StandardError; end
   class UnfoundVersionFileError < StandardError; end
+  class RakeArgumentsDeprecatedError < StandardError; end
 
   class <<self
     attr_accessor :tag_by_default

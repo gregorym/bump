@@ -19,8 +19,12 @@ describe "rake bump" do
   end
 
   it "bumps a version and can optionally tag it" do
-    run "rake bump:patch[true]"
+    run "rake bump:patch TAG=true"
     `git tag`.split("\n").last.should == "v1.2.4"
+  end
+
+  it "fails with rake arguments" do
+    run "rake bump:patch[true]", :fail => true
   end
 
   it "honors the tag setting in Bump::Bump.defaults" do

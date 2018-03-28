@@ -14,13 +14,15 @@ namespace :bump do
       desc "Bump #{bump} part of gem version"
     end
 
-    task bump, Bump::Bump.defaults.keys do |_task, args|
-      args = {
+    task bump, :tag do |_task, args|
+      raise RakeArgumentsDeprecatedError,
+        "rake arguments are deprecated, use TAG=false to disable tagging" if args.tag
+      options = {
         tag: ENV['TAG'],
         commit: ENV['COMMIT'],
         bundle: ENV['BUNDLE']
-      }.merge(args)
-      run_bump.call(bump, args)
+      }
+      run_bump.call(bump, options)
     end
   end
 
