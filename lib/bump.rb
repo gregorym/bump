@@ -27,7 +27,6 @@ module Bump
       end
 
       def run(bump, options={})
-        parse_cli_options!(options)
         options = defaults.merge(options)
 
         case bump
@@ -57,14 +56,14 @@ module Bump
         current_info.first
       end
 
-      private
-
       def parse_cli_options!(options)
         options.each do |key, value|
           options[key] = parse_cli_options_value(value)
         end
         options.delete_if{|key, value| value.nil?}
       end
+
+      private
 
       def parse_cli_options_value(value)
         case value

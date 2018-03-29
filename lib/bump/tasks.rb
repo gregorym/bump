@@ -22,7 +22,7 @@ namespace :bump do
         commit: ENV['COMMIT'],
         bundle: ENV['BUNDLE']
       }
-      run_bump.call(bump, options)
+      run_bump.call(bump, Bump::Bump.parse_cli_options!(options))
     end
   end
 

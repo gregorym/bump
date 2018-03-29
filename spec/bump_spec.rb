@@ -379,6 +379,21 @@ describe Bump do
     end
   end
 
+  context ".parse_cli_options!" do
+    it "returns the evaluated values of passed hash options" do
+      Bump::Bump.parse_cli_options!({tag: 'nil'})
+        .should == {}
+
+      Bump::Bump.parse_cli_options!({commit: 'true', bundle: 'false'})
+        .should == {commit: true, bundle: false}
+
+      options = {tag: 'nil', commit: 'true', bundle: 'false'}
+      expected_return = {commit: true, bundle: false}
+      Bump::Bump.parse_cli_options!(options).should == expected_return
+      options.should == expected_return
+    end
+  end
+
   context "VERSION in lib file" do
     let(:version_file) { "lib/foo.rb" }
 
