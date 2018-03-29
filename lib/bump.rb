@@ -4,6 +4,7 @@ module Bump
   class UnfoundVersionError < StandardError; end
   class TooManyVersionFilesError < StandardError; end
   class UnfoundVersionFileError < StandardError; end
+  class RakeArgumentsDeprecatedError < StandardError; end
 
   class <<self
     attr_accessor :tag_by_default
@@ -19,9 +20,9 @@ module Bump
 
       def defaults
         {
+          :tag => ::Bump.tag_by_default,
           :commit => true,
-          :bundle => File.exist?("Gemfile"),
-          :tag => ::Bump.tag_by_default
+          :bundle => File.exist?("Gemfile")
         }
       end
 
@@ -55,7 +56,24 @@ module Bump
         current_info.first
       end
 
+      def parse_cli_options!(options)
+        options.each do |key, value|
+          options[key] = parse_cli_options_value(value)
+        end
+        options.delete_if{|key, value| value.nil?}
+      end
+
       private
+
+      def parse_cli_options_value(value)
+        case value
+        when "true" then true
+        when "false" then false
+        when "nil" then nil
+        else
+          value
+        end
+      end
 
       def bump(file, current, next_version, options)
         replace(file, current, next_version)

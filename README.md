@@ -61,9 +61,19 @@ require "bump/tasks"
 #
 
 ```
+    
+    rake bump:current                           # display current version
 
+    # bumping using defaults for `COMMIT`, `TAG`, and `BUNDLE`
+    rake bump:major
     rake bump:patch
-    rake bump:current
+    rake bump:minor
+    rake bump:pre
+
+    # bumping with option(s)
+    rake bump:patch TAG=false BUNDLE=false      # commit, but don't tag or run `bundle`
+    rake bump:patch COMMIT=false TAG=false      # don't commit, don't tag
+    rake bump:minor BUNDLE=false                # don't run `bundle`
 
 ### Ruby
 ```Ruby

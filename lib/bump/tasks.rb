@@ -15,7 +15,14 @@ namespace :bump do
     end
 
     task bump, :tag do |_task, args|
-      run_bump.call(bump, args)
+      raise RakeArgumentsDeprecatedError,
+        "rake arguments are deprecated, use TAG=false to disable tagging" if args.tag
+      options = {
+        tag: ENV['TAG'],
+        commit: ENV['COMMIT'],
+        bundle: ENV['BUNDLE']
+      }
+      run_bump.call(bump, Bump::Bump.parse_cli_options!(options))
     end
   end
 

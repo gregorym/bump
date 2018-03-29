@@ -22,7 +22,10 @@ describe Bump do
   it "should fail with multiple gemspecs" do
     write_gemspec
     write("xxxx.gemspec", "Gem::Specification.new{}")
-    bump("current", :fail => true).should == "More than one version file found (fixture.gemspec, xxxx.gemspec)\n"
+    result = bump("current", :fail => true)
+    result.should include "More than one version file found"
+    result.should include "fixture.gemspec"
+    result.should include "xxxx.gemspec"
   end
 
   it "should fail if version is weird" do
@@ -373,6 +376,21 @@ describe Bump do
     it "returns the version as a string" do
       write_gemspec
       Bump::Bump.current.should == "4.2.3"
+    end
+  end
+
+  context ".parse_cli_options!" do
+    it "returns the evaluated values of passed hash options" do
+      Bump::Bump.parse_cli_options!({tag: 'nil'})
+        .should == {}
+
+      Bump::Bump.parse_cli_options!({commit: 'true', bundle: 'false'})
+        .should == {commit: true, bundle: false}
+
+      options = {tag: 'nil', commit: 'true', bundle: 'false'}
+      expected_return = {commit: true, bundle: false}
+      Bump::Bump.parse_cli_options!(options).should == expected_return
+      options.should == expected_return
     end
   end
 
