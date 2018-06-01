@@ -17,6 +17,12 @@ Current version:
 
 > Current version: 0.1.2
 
+Version file path:
+
+    bump file
+
+> Version file path: lib/foo/version.rb
+
 Bump (major, minor, patch, pre):
 
     bump patch
@@ -67,6 +73,7 @@ require "bump/tasks"
 ```
 
     rake bump:current                           # display current version
+    rake bump:file                              # display version file path
 
     # bumping using defaults for `COMMIT`, `TAG`, and `BUNDLE`
     rake bump:major
@@ -84,6 +91,7 @@ require "bump/tasks"
 ```ruby
 require "bump"
 Bump::Bump.current        # -> "1.2.3"
+Bump::Bump.file           # -> "lib/foo/version.rb"
 Bump::Bump.run("patch")   # -> version changed
 Bump::Bump.run("patch", commit: false, bundle:false, tag:false) # -> version changed with options
 Bump::Bump.run("patch", commit_message: '[no ci]') # -> creates a commit message with 'v1.2.3 [no ci]' instead of default: 'v1.2.3'

@@ -13,7 +13,7 @@ module Bump
   class Bump
     BUMPS         = %w(major minor patch pre)
     PRERELEASE    = ["alpha","beta","rc",nil]
-    OPTIONS       = BUMPS | ["set", "current"]
+    OPTIONS       = BUMPS | ["set", "current", "file"]
     VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
     class << self
@@ -37,6 +37,8 @@ module Bump
           bump_set(options[:version], options)
         when "current"
           ["Current version: #{current}", 0]
+        when "file"
+          ["Version file path: #{file}", 0]
         else
           raise InvalidOptionError
         end
@@ -54,6 +56,10 @@ module Bump
 
       def current
         current_info.first
+      end
+
+      def file
+        current_info.last
       end
 
       def parse_cli_options!(options)

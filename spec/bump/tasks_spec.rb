@@ -53,4 +53,9 @@ describe "rake bump" do
     result = run "rake bump:current"
     result.should include("1.2.3")
   end
+
+  it "shows the version file path" do
+    result = run "rake bump:file"
+    result.should include("VERSION")
+  end
 end
