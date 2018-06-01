@@ -243,8 +243,8 @@ describe Bump do
     end
 
     it "show current" do
-      bump("current").should include("#{version}")
-      read("VERSION").should include("#{version}")
+      bump("current").should include(version)
+      read("VERSION").should include(version)
     end
 
     it "should bump version" do
