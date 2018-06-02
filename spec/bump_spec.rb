@@ -200,7 +200,7 @@ describe Bump do
     end
 
     it "show file path" do
-      bump("file").should include("VERSION")
+      bump("file").should include(version_file)
       read(version_file).should include("VERSION = ")
     end
 
