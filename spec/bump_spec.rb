@@ -9,6 +9,10 @@ describe Bump do
     bump("current", :fail => true).should include "Unable to find"
   end
 
+  it "should fail if it cannot find version file" do
+    bump("file", :fail => true).should include "Unable to find"
+  end
+
   it "should fail without command" do
     write_gemspec
     bump("", :fail => true).should include "Usage instructions: bump --help"
@@ -112,6 +116,10 @@ describe Bump do
       read(gemspec).should include('s.version = "4.2.3"')
     end
 
+    it "should find version file" do
+      bump("file").should include("fixture.gemspec")
+    end
+
     it "should bump patch" do
       bump("patch").should include("4.2.4")
       read(gemspec).should include('s.version = "4.2.4"')
@@ -191,6 +199,11 @@ describe Bump do
       read(version_file).should include('  VERSION = "1.2.3"')
     end
 
+    it "show file path" do
+      bump("file").should include(version_file)
+      read(version_file).should include("VERSION = ")
+    end
+
     it "allows multiple" do
       Dir.mkdir "lib/foo/client"
       File.write("lib/foo/client/version.rb", "SomethingElse")
@@ -243,8 +256,12 @@ describe Bump do
     end
 
     it "show current" do
-      bump("current").should include("#{version}")
-      read("VERSION").should include("#{version}")
+      bump("current").should include(version)
+      read("VERSION").should include(version)
+    end
+
+    it "show file" do
+      bump("file").should include("VERSION")
     end
 
     it "should bump version" do
@@ -275,6 +292,10 @@ describe Bump do
       it "show current" do
         bump("current").should include(version)
         read("VERSION").should include(version)
+      end
+
+      it "show file path" do
+        bump("file").should include("VERSION")
       end
 
       it "minor should drop prerelease" do
@@ -379,6 +400,13 @@ describe Bump do
     end
   end
 
+  context ".file" do
+    it "returns the version file path as a string" do
+      write_gemspec
+      Bump::Bump.file.should == "fixture.gemspec"
+    end
+  end
+
   context ".parse_cli_options!" do
     it "returns the evaluated values of passed hash options" do
       Bump::Bump.parse_cli_options!({tag: 'nil'})
@@ -406,6 +434,10 @@ describe Bump do
     it "show current" do
       bump("current").should include("1.2.3")
       read(version_file).should include('  VERSION = "1.2.3"')
+    end
+
+    it "show file path" do
+      bump("file").should include(version_file)
     end
 
     it "should bump VERSION" do
@@ -450,6 +482,10 @@ describe Bump do
       it "show current" do
         bump("current").should include("1.2.3")
         read(version_file).should include('  VERSION = "1.2.3"')
+      end
+
+      it "show file path" do
+        bump("file").should include(version_file)
       end
     end
   end

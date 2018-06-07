@@ -49,8 +49,13 @@ describe "rake bump" do
     run "rake bump:minor", :fail => true
   end
 
-  it "shows the version" do
+  it "shows the current version" do
     result = run "rake bump:current"
     result.should include("1.2.3")
+  end
+
+  it "shows the version file path" do
+    result = run "rake bump:file"
+    result.should include("VERSION")
   end
 end
