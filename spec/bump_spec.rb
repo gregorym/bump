@@ -319,8 +319,24 @@ describe Bump do
         end
       end
 
+      context "alpha with pre version" do
+        let(:version) { "1.2.3-alpha.5" }
+        it "should bump to beta" do
+          bump("pre").should include("1.2.3-beta")
+          read("VERSION").should include("1.2.3-beta")
+        end
+      end
+
       context "beta" do
         let(:version) { "1.2.3-beta" }
+        it "should bump to rc" do
+          bump("pre").should include("1.2.3-rc")
+          read("VERSION").should include("1.2.3-rc")
+        end
+      end
+
+      context "beta with pre version" do
+        let(:version) { "1.2.3-beta.12" }
         it "should bump to rc" do
           bump("pre").should include("1.2.3-rc")
           read("VERSION").should include("1.2.3-rc")
@@ -335,12 +351,263 @@ describe Bump do
         end
       end
 
+      context "rc with pre version" do
+        let(:version) { "1.2.3-rc.20" }
+        it "should bump to final" do
+          bump("pre").should include("1.2.3")
+          read("VERSION").should include("1.2.3")
+        end
+      end
+
       context "final" do
         let(:version) { "1.2.3" }
         it "should bump to alpha" do
           bump("pre").should include("1.2.3-alpha")
           read("VERSION").should include("1.2.3-alpha")
         end
+      end
+    end
+  end
+
+  context 'with alhpa-release identifier' do
+    let(:version) { '1.2.3-alpha' }
+
+    before do
+      write 'VERSION', "#{version}\n"
+    end
+
+    it 'show current' do
+      bump('current').should include(version)
+      read('VERSION').should include(version)
+    end
+
+    it 'show file path' do
+      bump('file').should include('VERSION')
+    end
+
+    it 'minor should drop alhpa release' do
+      bump('minor').should include('1.3.0')
+      read('VERSION').should include('1.3.0')
+      bump('minor').should_not include('alpha')
+      read('VERSION').should_not include('alpha')
+    end
+
+    it 'major should drop alhpa release' do
+      bump('major').should include('2.0.0')
+      read('VERSION').should include('2.0.0')
+      bump('major').should_not include('alpha')
+      read('VERSION').should_not include('alpha')
+    end
+
+    it 'should bump to alhpa.1' do
+      bump('alpha').should include('1.2.3-alpha.1')
+      read('VERSION').should include('1.2.3-alpha.1')
+    end
+
+    it 'should bump pre version many times' do
+      11.times { bump('alpha') }
+
+      read('VERSION').should include('1.2.3-alpha.11')
+    end
+
+    context 'beta' do
+      let(:version) { '1.2.3-beta' }
+
+      it 'should fail with an error' do
+        -> { bump('alpha') }.should raise_error(/Cannot bump prerelease version from beta to alpha/)
+      end
+
+      it 'should not bump a file' do
+        read('VERSION').should include(version)
+      end
+    end
+
+    context 'rc' do
+      let(:version) { '1.2.3-rc' }
+
+      it 'should fail with an error' do
+        -> { bump('alpha') }.should raise_error(/Cannot bump prerelease version from rc to alpha/)
+      end
+
+      it 'should not bump a file' do
+        read('VERSION').should include(version)
+      end
+    end
+
+    context 'final' do
+      let(:version) { '1.2.3' }
+
+      it 'should bump to alpha' do
+        bump('alpha').should include('1.2.3-alpha')
+        read('VERSION').should include('1.2.3-alpha')
+      end
+    end
+  end
+
+  context 'with beta-release identifier' do
+    let(:version) { '1.2.3-beta' }
+
+    before do
+      write 'VERSION', "#{version}\n"
+    end
+
+    it 'show current' do
+      bump('current').should include(version)
+      read('VERSION').should include(version)
+    end
+
+    it 'show file path' do
+      bump('file').should include('VERSION')
+    end
+
+    it 'minor should drop beta release' do
+      bump('minor').should include('1.3.0')
+      read('VERSION').should include('1.3.0')
+      bump('minor').should_not include('beta')
+      read('VERSION').should_not include('beta')
+    end
+
+    it 'major should drop beta release' do
+      bump('major').should include('2.0.0')
+      read('VERSION').should include('2.0.0')
+      bump('major').should_not include('beta')
+      read('VERSION').should_not include('beta')
+    end
+
+    it 'should bump to beta.1' do
+      bump('beta').should include('1.2.3-beta.1')
+      read('VERSION').should include('1.2.3-beta.1')
+    end
+
+    it 'should bump pre version many times' do
+      11.times { bump('beta') }
+
+      read('VERSION').should include('1.2.3-beta.11')
+    end
+
+    context 'alpha' do
+      let(:version) { '1.2.3-alpha' }
+
+      it 'should bump to beta' do
+        bump('beta').should include('1.2.3-beta')
+        read('VERSION').should include('1.2.3-beta')
+      end
+    end
+
+    context 'alpha with pre version' do
+      let(:version) { '1.2.3-alpha.4' }
+
+      it 'should bump to beta' do
+        bump('beta').should include('1.2.3-beta')
+        read('VERSION').should include('1.2.3-beta')
+      end
+    end
+
+    context 'rc' do
+      let(:version) { '1.2.3-rc' }
+
+      it 'should fail with an error' do
+        -> { bump('beta') }.should raise_error(/Cannot bump prerelease version from rc to beta/)
+      end
+
+      it 'should not bump a file' do
+        read('VERSION').should include(version)
+      end
+    end
+
+    context 'final' do
+      let(:version) { '1.2.3' }
+
+      it 'should bump to beta' do
+        bump('beta').should include('1.2.3-beta')
+        read('VERSION').should include('1.2.3-beta')
+      end
+    end
+  end
+
+  context 'with rc-release identifier' do
+    let(:version) { '1.2.3-rc' }
+
+    before do
+      write 'VERSION', "#{version}\n"
+    end
+
+    it 'show current' do
+      bump('current').should include(version)
+      read('VERSION').should include(version)
+    end
+
+    it 'show file path' do
+      bump('file').should include('VERSION')
+    end
+
+    it 'minor should drop rc release' do
+      bump('minor').should include('1.3.0')
+      read('VERSION').should include('1.3.0')
+      bump('minor').should_not include('rc')
+      read('VERSION').should_not include('rc')
+    end
+
+    it 'major should drop rc release' do
+      bump('major').should include('2.0.0')
+      read('VERSION').should include('2.0.0')
+      bump('major').should_not include('rc')
+      read('VERSION').should_not include('rc')
+    end
+
+    it 'should bump to rc.1' do
+      bump('rc').should include('1.2.3-rc.1')
+      read('VERSION').should include('1.2.3-rc.1')
+    end
+
+    it 'should bump pre version many times' do
+      11.times { bump('rc') }
+
+      read('VERSION').should include('1.2.3-rc.11')
+    end
+
+    context 'alpha' do
+      let(:version) { '1.2.3-alpha' }
+
+      it 'should bump to rc' do
+        bump('rc').should include('1.2.3-rc')
+        read('VERSION').should include('1.2.3-rc')
+      end
+    end
+
+    context 'alpha with pre version' do
+      let(:version) { '1.2.3-alpha.4' }
+
+      it 'should bump to rc' do
+        bump('rc').should include('1.2.3-rc')
+        read('VERSION').should include('1.2.3-rc')
+      end
+    end
+
+    context 'beta' do
+      let(:version) { '1.2.3-beta' }
+
+      it 'should bump to rc' do
+        bump('rc').should include('1.2.3-rc')
+        read('VERSION').should include('1.2.3-rc')
+      end
+    end
+
+    context 'beta with pre version' do
+      let(:version) { '1.2.3-beta.4' }
+
+      it 'should bump to rc' do
+        bump('rc').should include('1.2.3-rc')
+        read('VERSION').should include('1.2.3-rc')
+      end
+    end
+
+    context 'final' do
+      let(:version) { '1.2.3' }
+
+      it 'should bump to rc' do
+        bump('rc').should include('1.2.3-rc')
+        read('VERSION').should include('1.2.3-rc')
       end
     end
   end

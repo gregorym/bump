@@ -29,6 +29,14 @@ Bump (major, minor, patch, pre):
 
 > Bump version 0.1.2 to 0.1.3
 
+
+Bump prerelease (alpha, beta, rc):
+
+    bump beta
+
+> Bump version 0.1.2-beta to 0.1.2-beta.1
+
+
 ## Options
 
 ### `--no-commit`
@@ -80,6 +88,9 @@ require "bump/tasks"
     rake bump:patch
     rake bump:minor
     rake bump:pre
+    rake bump:alpha
+    rake bump:beta
+    rake bump:rc
 
     # bumping with option(s)
     rake bump:patch TAG=false BUNDLE=false      # commit, but don't tag or run `bundle`
