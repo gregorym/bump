@@ -10,6 +10,9 @@ Usage:
     bump current    # show current version
     bump file       # show version file path
     bump pre        # increase prerelease version of your gem (1.0.0-X) [alpha, beta, rc, ]
+    bump alhpa      # increase alpha version of your gem (1.0.0-X) [alpha, alpha.1, alpha.2]
+    bump beta       # increase beta version of your gem (1.0.0-X) [beta, beta.1, beta.2]
+    bump rc         # increase release canddate version of your gem (1.0.0-X) [rc, rc.1, rc.2]
     bump patch      # increase patch version of your gem (1.0.X)
     bump minor      # increase minor version of your gem (1.X.0)
     bump major      # increase major version of your gem (X.0.0)
@@ -33,7 +36,8 @@ if ARGV.first == "set"
   options[:version] = ARGV[1]
 end
 
-require File.dirname(__FILE__) + '/../lib/bump'
+require File.expand_path('../../lib/bump', __FILE__)
+
 output, status = Bump::Bump.run(ARGV.first, options)
 puts output
 exit status

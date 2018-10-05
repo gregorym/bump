@@ -1,4 +1,4 @@
-require "bump"
+require File.expand_path('../../bump', __FILE__)
 
 namespace :bump do
   run_bump = lambda do |bump, options|

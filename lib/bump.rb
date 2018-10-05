@@ -11,10 +11,10 @@ module Bump
   end
 
   class Bump
-    BUMPS         = %w(major minor patch pre)
-    PRERELEASE    = ["alpha","beta","rc",nil]
+    BUMPS         = %w(major minor patch pre rc beta alpha)
+    PRERELEASE    = ["alpha", "beta", "rc", nil]
     OPTIONS       = BUMPS | ["set", "current", "file"]
-    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
+    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)(?:\.\d+)?)?)/
 
     class << self
 
@@ -194,20 +194,43 @@ module Bump
         current, prerelease = current.split('-')
         major, minor, patch, *other = current.split('.')
         case part
-        when "major"
+        when 'major'
           major, minor, patch, prerelease = major.succ, 0, 0, nil
-        when "minor"
+        when 'minor'
           minor, patch, prerelease = minor.succ, 0, nil
-        when "patch"
+        when 'patch'
           patch = patch.succ
-        when "pre"
-          prerelease.strip! if prerelease.respond_to? :strip
-          prerelease = PRERELEASE[PRERELEASE.index(prerelease).succ % PRERELEASE.length]
+        when 'pre'
+          prerelease = next_prerelease(nil, prerelease)
+        when 'alpha'
+          prerelease = next_prerelease('alpha', prerelease)
+        when 'beta'
+          prerelease = next_prerelease('beta', prerelease)
+        when 'rc'
+          prerelease = next_prerelease('rc', prerelease)
         else
           raise "unknown part #{part.inspect}"
         end
         version = [major, minor, patch, *other].compact.join('.')
         [version, prerelease].compact.join('-')
+      end
+
+      def next_prerelease(next_label, prerelease)
+        label, version = prerelease.to_s.split('.')
+
+        version ||= '0'
+        next_label ||= PRERELEASE[PRERELEASE.index(label).succ % PRERELEASE.length]
+
+        case BUMPS.index(label) <=> BUMPS.index(next_label)
+        when -1 # downgrading prerelease labels
+          raise "Cannot bump prerelease version from #{label} to #{next_label}"
+        when 0 # equal prerelease labels
+          next_version = version.succ
+        else # no label or prerelease upgrade
+          next_version = nil
+        end
+
+        [next_label, next_version].compact.join('.')
       end
 
       def under_version_control?(file)
