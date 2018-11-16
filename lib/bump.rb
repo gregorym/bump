@@ -11,22 +11,21 @@ module Bump
   end
 
   class Bump
-    BUMPS         = %w(major minor patch pre)
-    PRERELEASE    = ["alpha","beta","rc",nil]
+    BUMPS         = ["major", "minor", "patch", "pre"].freeze
+    PRERELEASE    = ["alpha", "beta", "rc", nil].freeze
     OPTIONS       = BUMPS | ["set", "current", "file"]
-    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
+    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/.freeze
 
     class << self
-
       def defaults
         {
-          :tag => ::Bump.tag_by_default,
-          :commit => true,
-          :bundle => File.exist?("Gemfile")
+          tag: ::Bump.tag_by_default,
+          commit: true,
+          bundle: File.exist?("Gemfile")
         }
       end
 
-      def run(bump, options={})
+      def run(bump, options = {})
         options = defaults.merge(options)
 
         case bump
@@ -34,6 +33,7 @@ module Bump
           bump_part(bump, options)
         when "set"
           raise InvalidVersionError unless options[:version]
+
           bump_set(options[:version], options)
         when "current"
           ["Current version: #{current}", 0]
@@ -66,7 +66,7 @@ module Bump
         options.each do |key, value|
           options[key] = parse_cli_options_value(value)
         end
-        options.delete_if{|key, value| value.nil?}
+        options.delete_if { |_key, value| value.nil? }
       end
 
       private
@@ -83,7 +83,7 @@ module Bump
 
       def bump(file, current, next_version, options)
         replace(file, current, next_version)
-        if options[:bundle] and Dir.glob('*.gemspec').any? and under_version_control?("Gemfile.lock")
+        if options[:bundle] && Dir.glob('*.gemspec').any? && under_version_control?("Gemfile.lock")
           bundler_with_clean_env do
             return ["Bundle error", 1] unless system("bundle")
           end
@@ -112,19 +112,19 @@ module Bump
       end
 
       def commit_message(version, options)
-        (options[:commit_message]) ? "v#{version} #{options[:commit_message]}" : "v#{version}"
+        options[:commit_message] ? "v#{version} #{options[:commit_message]}" : "v#{version}"
       end
 
       def commit(version, file, options)
         return unless File.directory?(".git")
+
         system("git add --update Gemfile.lock") if options[:bundle]
         system("git add --update #{file} && git commit -m '#{commit_message(version, options)}'")
         system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
       end
 
       def replace(file, old, new)
-        content = File.read(file)
-        File.open(file, "w"){|f| f.write(content.sub(old, new)) }
+        File.write(file, File.read(file).sub(old, new))
       end
 
       def current_info
@@ -132,18 +132,25 @@ module Bump
           version_from_version ||
           version_from_version_rb ||
           version_from_gemspec ||
-          version_from_lib_rb  ||
-          version_from_chef  ||
+          version_from_lib_rb ||
+          version_from_chef ||
           raise(UnfoundVersionFileError)
         )
         raise UnfoundVersionError unless version
+
         [version, file]
       end
 
       def version_from_gemspec
-        return unless file    = find_version_file("*.gemspec")
-        version               = File.read(file)[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1]
-        return unless version = File.read(file)[/Gem::Specification.new.+ ["']#{VERSION_REGEX}["']/, 1] if version.nil?
+        return unless file = find_version_file("*.gemspec")
+
+        content = File.read(file)
+        version = (
+          content[/\.version\s*=\s*["']#{VERSION_REGEX}["']/, 1] ||
+          File.read(file)[/Gem::Specification.new.+ ["']#{VERSION_REGEX}["']/, 1]
+        )
+        return unless version
+
         [version, file]
       end
 
@@ -158,6 +165,7 @@ module Bump
 
       def version_from_version
         return unless file = find_version_file("VERSION")
+
         extract_version_from_file(file)
       end
 
@@ -166,17 +174,19 @@ module Bump
         file = files.detect do |f|
           File.read(f) =~ /^\s+VERSION = ['"](#{VERSION_REGEX})['"]/i
         end
-        [$1, file] if file
+        [Regexp.last_match(1), file] if file
       end
 
       def version_from_chef
         file = find_version_file("metadata.rb")
         return unless file && File.read(file) =~ /^version\s+(['"])(#{VERSION_REGEX})['"]/
-        [$2, file]
+
+        [Regexp.last_match(2), file]
       end
 
       def extract_version_from_file(file)
         return unless version = File.read(file)[VERSION_REGEX]
+
         [version, file]
       end
 
@@ -195,9 +205,14 @@ module Bump
         major, minor, patch, *other = current.split('.')
         case part
         when "major"
-          major, minor, patch, prerelease = major.succ, 0, 0, nil
+          major = major.succ
+          minor = 0
+          patch = 0
+          prerelease = nil
         when "minor"
-          minor, patch, prerelease = minor.succ, 0, nil
+          minor = minor.succ
+          patch = 0
+          prerelease = nil
         when "patch"
           patch = patch.succ
         when "pre"

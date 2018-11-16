@@ -17,8 +17,12 @@ namespace :bump do
     end
 
     task bump, :tag do |_task, args|
-      raise RakeArgumentsDeprecatedError,
-        "rake arguments are deprecated, use TAG=false to disable tagging" if args.tag
+      if args.tag
+        raise(
+          RakeArgumentsDeprecatedError,
+          "rake arguments are deprecated, use TAG=false to disable tagging"
+        )
+      end
       options = {
         tag: ENV['TAG'],
         commit: ENV['COMMIT'],
@@ -30,6 +34,6 @@ namespace :bump do
 
   desc "Sets the version number using the VERSION environment variable"
   task :set do
-    run_bump.call("set", :version => ENV['VERSION'])
+    run_bump.call("set", version: ENV['VERSION'])
   end
 end

@@ -14,4 +14,10 @@ before_script:
   - git config --global user.name "Your Name"
 env:
   - JRUBY_OPTS='--debug'
+script: bundle exec rake spec
 
+matrix:
+  include:
+    - name: rubocop
+      script: bundle exec rake rubocop
+      rvm: 2.2 # always match lowest supported version
