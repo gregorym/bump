@@ -166,6 +166,17 @@ describe Bump do
       read(gemspec).should include('s.version = "4.2.4"')
       read(gemspec).should include("'rake', #{version}")
     end
+
+    it "can bump in additional files" do
+      with_file "Readme.md", "X4.2.3Y" do
+        bump("patch --replace-in Readme.md").should include("4.2.4")
+        read("Readme.md").should include("X4.2.4Y")
+      end
+    end
+
+    it "fails when asked to bump in missing additional files" do
+      bump("patch --replace-in Readme.md", fail: true)
+    end
   end
 
   context ".version in gemspec within the initializer" do
@@ -543,5 +554,12 @@ describe Bump do
         VERSION = #{version}
       end
     RUBY
+  end
+
+  def with_file(file, content)
+    File.write(file, content)
+    yield
+  ensure
+    File.unlink file
   end
 end

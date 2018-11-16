@@ -7,7 +7,7 @@ module Bump
   class RakeArgumentsDeprecatedError < StandardError; end
 
   class <<self
-    attr_accessor :tag_by_default
+    attr_accessor :tag_by_default, :replace_in_default
   end
 
   class Bump
@@ -21,12 +21,14 @@ module Bump
         {
           tag: ::Bump.tag_by_default,
           commit: true,
-          bundle: File.exist?("Gemfile")
+          bundle: File.exist?("Gemfile"),
+          replace_in: ::Bump.replace_in_default || []
         }
       end
 
       def run(bump, options = {})
         options = defaults.merge(options)
+        options[:commit] = false unless File.directory?(".git")
 
         case bump
         when *BUMPS
@@ -82,13 +84,26 @@ module Bump
       end
 
       def bump(file, current, next_version, options)
-        replace(file, current, next_version)
+        # bump in files that need to change
+        [file, *options[:replace_in]].each do |f|
+          return ["Unable to find version #{current} in #{f}", 1] unless replace f, current, next_version
+
+          git_add f if options[:commit]
+        end
+
+        # bundle if needed
         if options[:bundle] && Dir.glob('*.gemspec').any? && under_version_control?("Gemfile.lock")
           bundler_with_clean_env do
             return ["Bundle error", 1] unless system("bundle")
+
+            git_add "Gemfile.lock" if options[:commit]
           end
         end
-        commit(next_version, file, options) if options[:commit]
+
+        # commit staged changes
+        commit next_version, options if options[:commit]
+
+        # tell user the result
         ["Bump version #{current} to #{next_version}", 0]
       end
 
@@ -112,19 +127,24 @@ module Bump
       end
 
       def commit_message(version, options)
-        options[:commit_message] ? "v#{version} #{options[:commit_message]}" : "v#{version}"
+        base = "v#{version}"
+        options[:commit_message] ? "#{base} #{options[:commit_message]}" : base
       end
 
-      def commit(version, file, options)
-        return unless File.directory?(".git")
+      def commit(version, options)
+        system("git", "commit", "-m", commit_message(version, options))
+        system("git", "tag", "-a", "-m", "Bump to v#{version}", "v#{version}") if options[:tag]
+      end
 
-        system("git add --update Gemfile.lock") if options[:bundle]
-        system("git add --update #{file} && git commit -m '#{commit_message(version, options)}'")
-        system("git tag -a -m 'Bump to v#{version}' v#{version}") if options[:tag]
+      def git_add(file)
+        system("git", "add", "--update", file)
       end
 
       def replace(file, old, new)
-        File.write(file, File.read(file).sub(old, new))
+        content = File.read(file)
+        return unless content.sub!(old, new)
+
+        File.write(file, content)
       end
 
       def current_info
