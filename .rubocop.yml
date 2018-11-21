@@ -1,0 +1,41 @@
+AllCops:
+  TargetRubyVersion: 2.2 # match lowest supported ruby version
+
+Metrics:
+  Enabled: false
+
+# allow mixing ' and "
+Style/StringLiterals:
+  Enabled: false
+
+# allow `if a = foo()` style
+Lint/AssignmentInCondition:
+  Enabled: false
+
+# `a == 0` is easier to understand
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
+# ["foo"] is simpler then %w[foo]
+Style/WordArray:
+  EnforcedStyle: brackets
+
+# recommendations are not safe like $ERROR_INFO
+Style/SpecialGlobalVars:
+  Enabled: false
+
+# we are bad with docs :D
+Style/Documentation:
+  Enabled: false
+
+# we use old rspec style ... fix and then remove
+Lint/Void:
+  Enabled: false
+
+# can be useful for terse expressions
+Style/Semicolon:
+  Enabled: false
+
+# [:a] is easier to read than %i[a]
+Style/SymbolArray:
+  EnforcedStyle: brackets

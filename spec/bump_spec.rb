@@ -6,27 +6,27 @@ describe Bump do
   inside_of_folder("spec/fixture")
 
   it "should fail if it cannot find anything to bump" do
-    bump("current", :fail => true).should include "Unable to find"
+    bump("current", fail: true).should include "Unable to find"
   end
 
   it "should fail if it cannot find version file" do
-    bump("file", :fail => true).should include "Unable to find"
+    bump("file", fail: true).should include "Unable to find"
   end
 
   it "should fail without command" do
     write_gemspec
-    bump("", :fail => true).should include "Usage instructions: bump --help"
+    bump("", fail: true).should include "Usage instructions: bump --help"
   end
 
   it "should fail with invalid options" do
     write_gemspec
-    bump("xxx", :fail => true).should include "Invalid option"
+    bump("xxx", fail: true).should include "Invalid option"
   end
 
   it "should fail with multiple gemspecs" do
     write_gemspec
     write("xxxx.gemspec", "Gem::Specification.new{}")
-    result = bump("current", :fail => true)
+    result = bump("current", fail: true)
     result.should include "More than one version file found"
     result.should include "fixture.gemspec"
     result.should include "xxxx.gemspec"
@@ -34,7 +34,7 @@ describe Bump do
 
   it "should fail if version is weird" do
     write_gemspec('"1."+"3.4"')
-    bump("current", :fail => true).should include "Unable to find a file with the gem version"
+    bump("current", fail: true).should include "Unable to find a file with the gem version"
   end
 
   it "should show help" do
@@ -170,7 +170,7 @@ describe Bump do
 
   context ".version in gemspec within the initializer" do
     before do
-      write gemspec, <<-RUBY.sub(" "*6, "")
+      write gemspec, <<-RUBY.sub(" " * 6, "")
         Gem::Specification.new "bump", "4.2.3" do
         end
       RUBY
@@ -221,7 +221,7 @@ describe Bump do
     end
 
     it "should bump Version" do
-      write version_file, <<-RUBY.sub(" "*8, "")
+      write version_file, <<-RUBY.sub(" " * 8, "")
         module Foo
           Version = "1.2.3"
         end
@@ -231,7 +231,7 @@ describe Bump do
     end
 
     it "should set Version" do
-      write version_file, <<-RUBY.sub(" "*8, "")
+      write version_file, <<-RUBY.sub(" " * 8, "")
         module Foo
           Version = "1.2.3"
         end
@@ -409,14 +409,14 @@ describe Bump do
 
   context ".parse_cli_options!" do
     it "returns the evaluated values of passed hash options" do
-      Bump::Bump.parse_cli_options!({tag: 'nil'})
-        .should == {}
+      Bump::Bump.parse_cli_options!(tag: 'nil')
+                .should == {}
 
-      Bump::Bump.parse_cli_options!({commit: 'true', bundle: 'false'})
-        .should == {commit: true, bundle: false}
+      Bump::Bump.parse_cli_options!(commit: 'true', bundle: 'false')
+                .should == { commit: true, bundle: false }
 
-      options = {tag: 'nil', commit: 'true', bundle: 'false'}
-      expected_return = {commit: true, bundle: false}
+      options = { tag: 'nil', commit: 'true', bundle: 'false' }
+      expected_return = { commit: true, bundle: false }
       Bump::Bump.parse_cli_options!(options).should == expected_return
       options.should == expected_return
     end
@@ -451,7 +451,7 @@ describe Bump do
     end
 
     it "should bump Version" do
-      write version_file, <<-RUBY.sub(" "*8, "")
+      write version_file, <<-RUBY.sub(" " * 8, "")
         module Foo
           Version = "1.2.3"
         end
@@ -461,7 +461,7 @@ describe Bump do
     end
 
     it "should set Version" do
-      write version_file, <<-RUBY.sub(" "*8, "")
+      write version_file, <<-RUBY.sub(" " * 8, "")
         module Foo
           Version = "1.2.3"
         end
@@ -511,7 +511,7 @@ describe Bump do
 
   context 'verify private class mothods' do
     it 'raise exception when called' do
-      lambda { Bump::Bump.bump('foo','1.2.3','1.2.4',{}) }.should raise_error NoMethodError
+      -> { Bump::Bump.bump('foo', '1.2.3', '1.2.4', {}) }.should raise_error NoMethodError
     end
     it 'has private methods' do
       Bump::Bump.private_methods(false).size.should > Object.private_methods(false).size
@@ -520,13 +520,13 @@ describe Bump do
 
   private
 
-  def bump(command="", options={})
-    cmdline = "#{File.expand_path("../../bin/bump", __FILE__)} #{command}"
+  def bump(command = "", options = {})
+    cmdline = "#{File.expand_path('../bin/bump', __dir__)} #{command}"
     run cmdline, options
   end
 
   def write_gemspec(version = '"4.2.3"')
-    write gemspec, <<-RUBY.sub(" "*6, "")
+    write gemspec, <<-RUBY.sub(" " * 6, "")
       Gem::Specification.new do |s|
         s.author  = 'joe'
         s.name    = 'fixture'
@@ -538,7 +538,7 @@ describe Bump do
   end
 
   def write_version_file(version = '"1.2.3"')
-    write version_file, <<-RUBY.sub(" "*6, "")
+    write version_file, <<-RUBY.sub(" " * 6, "")
       module Foo
         VERSION = #{version}
       end

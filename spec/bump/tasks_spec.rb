@@ -24,7 +24,7 @@ describe "rake bump" do
   end
 
   it "fails with rake arguments" do
-    run "rake bump:patch[true]", :fail => true
+    run "rake bump:patch[true]", fail: true
   end
 
   it "honors the tag setting in Bump::Bump.defaults" do
@@ -46,7 +46,7 @@ describe "rake bump" do
 
   it "fails when it cannot bump" do
     write "VERSION", "AAA"
-    run "rake bump:minor", :fail => true
+    run "rake bump:minor", fail: true
   end
 
   it "shows the current version" do

@@ -3,25 +3,25 @@ require 'optparse'
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = <<BANNER
-Bump your gem version.
+  opts.banner = <<-BANNER.gsub(/^    /, "")
+    Bump your gem version.
 
-Usage:
-    bump current    # show current version
-    bump file       # show version file path
-    bump pre        # increase prerelease version of your gem (1.0.0-X) [alpha, beta, rc, ]
-    bump patch      # increase patch version of your gem (1.0.X)
-    bump minor      # increase minor version of your gem (1.X.0)
-    bump major      # increase major version of your gem (X.0.0)
-    bump set 1.2.3  # set the version number to the given value
+    Usage:
+        bump current    # show current version
+        bump file       # show version file path
+        bump pre        # increase prerelease version of your gem (1.0.0-X) [alpha, beta, rc, ]
+        bump patch      # increase patch version of your gem (1.0.X)
+        bump minor      # increase minor version of your gem (1.X.0)
+        bump major      # increase major version of your gem (X.0.0)
+        bump set 1.2.3  # set the version number to the given value
 
-Options:
-BANNER
+    Options:
+  BANNER
   opts.on("--no-commit", "Do not make a commit.") { options[:commit] = false }
-  opts.on("-m","--commit-message [MSG]", "Append MSG to the commit message.") {|msg| options[:commit_message] = msg }
+  opts.on("-m", "--commit-message [MSG]", "Append MSG to the commit message.") { |msg| options[:commit_message] = msg }
   opts.on("--no-bundle", "Do not bundle.") { options[:bundle] = false }
   opts.on("--tag", "Create git tag from version (only if commit is true).") { options[:tag] = true }
-  opts.on("-h", "--help","Show this.") { puts opts; exit }
+  opts.on("-h", "--help", "Show this.") { puts opts; exit }
 end.parse!
 
 unless (ARGV.size == 1 && ARGV.first != "set") || (ARGV.size == 2 && ARGV.first == "set")
@@ -29,9 +29,7 @@ unless (ARGV.size == 1 && ARGV.first != "set") || (ARGV.size == 2 && ARGV.first 
   exit 1
 end
 
-if ARGV.first == "set"
-  options[:version] = ARGV[1]
-end
+options[:version] = ARGV[1] if ARGV[0] == "set"
 
 require File.dirname(__FILE__) + '/../lib/bump'
 output, status = Bump::Bump.run(ARGV.first, options)
