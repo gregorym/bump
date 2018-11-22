@@ -49,6 +49,12 @@ If you don't want to run the `bundle` command after bumping, add the `--no-bundl
 
     bump patch --no-bundle
 
+### `--replace-in`
+
+If you want to bump the version in additional files
+
+    bump patch --reaplace-in Readme.md
+
 ### `--commit-message [MSG], -m [MSG]`
 
 If you want to append additional information to the commit message, pass it in using the `--commit-message [MSG]` or `-m [MSG]` option.
@@ -69,6 +75,8 @@ require "bump/tasks"
 # if you want to always tag the version, add:
 # Bump.tag_by_default = true
 #
+# if you want to bump the version in additional files, add:
+# Bump.replace_in_default = ["Readme.md"]
 
 ```
 
