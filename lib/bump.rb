@@ -1,3 +1,5 @@
+require 'pry'
+
 module Bump
   class InvalidOptionError < StandardError; end
   class InvalidVersionError < StandardError; end
@@ -39,6 +41,9 @@ module Bump
           bump_set(options[:version], options)
         when "current"
           ["Current version: #{current}", 0]
+        when "next"
+          increment = options[:increment]
+          ["Next #{increment} version: #{next_version(current, increment)}", 0]
         when "file"
           ["Version file path: #{file}", 0]
         else
@@ -58,6 +63,31 @@ module Bump
 
       def current
         current_info.first
+      end
+
+      def next_version(current, part)
+        current, prerelease = current.split('-')
+        major, minor, patch, *other = current.split('.')
+        case part
+        when "major"
+          major = major.succ
+          minor = 0
+          patch = 0
+          prerelease = nil
+        when "minor"
+          minor = minor.succ
+          patch = 0
+          prerelease = nil
+        when "patch"
+          patch = patch.succ
+        when "pre"
+          prerelease.strip! if prerelease.respond_to? :strip
+          prerelease = PRERELEASE[PRERELEASE.index(prerelease).succ % PRERELEASE.length]
+        else
+          raise "unknown part #{part.inspect}"
+        end
+        version = [major, minor, patch, *other].compact.join('.')
+        [version, prerelease].compact.join('-')
       end
 
       def file
@@ -218,31 +248,6 @@ module Bump
         else
           raise TooManyVersionFilesError, files.join(", ")
         end
-      end
-
-      def next_version(current, part)
-        current, prerelease = current.split('-')
-        major, minor, patch, *other = current.split('.')
-        case part
-        when "major"
-          major = major.succ
-          minor = 0
-          patch = 0
-          prerelease = nil
-        when "minor"
-          minor = minor.succ
-          patch = 0
-          prerelease = nil
-        when "patch"
-          patch = patch.succ
-        when "pre"
-          prerelease.strip! if prerelease.respond_to? :strip
-          prerelease = PRERELEASE[PRERELEASE.index(prerelease).succ % PRERELEASE.length]
-        else
-          raise "unknown part #{part.inspect}"
-        end
-        version = [major, minor, patch, *other].compact.join('.')
-        [version, prerelease].compact.join('-')
       end
 
       def under_version_control?(file)

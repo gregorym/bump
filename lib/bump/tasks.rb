@@ -10,6 +10,8 @@ namespace :bump do
   (Bump::Bump::BUMPS + ["current", "file"]).each do |bump|
     if bump == "current"
       desc "Show current gem version"
+    elsif bump == "next"
+      desc "Show next gem version"
     elsif bump == "file"
       desc "Show version file path"
     else
@@ -29,6 +31,13 @@ namespace :bump do
         bundle: ENV['BUNDLE']
       }
       run_bump.call(bump, Bump::Bump.parse_cli_options!(options))
+    end
+  end
+
+  Bump::Bump::BUMPS.each do |increment|
+    desc "Show next #{Bump::Bump::BUMPS.join('|')} version."
+    task :next, increment do |_task, _args|
+      run_bump.call("next", increment: increment)
     end
   end
 
