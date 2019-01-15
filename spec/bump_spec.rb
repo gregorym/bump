@@ -9,6 +9,10 @@ describe Bump do
     bump("current", fail: true).should include "Unable to find"
   end
 
+  it "should fail if invalid increment was given" do
+    bump("show-next wrong", fail: true).should include "Invalid increment"
+  end
+
   it "should fail if it cannot find version file" do
     bump("file", fail: true).should include "Unable to find"
   end

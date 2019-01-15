@@ -7,7 +7,7 @@ namespace :bump do
     abort unless status == 0
   end
 
-  (Bump::Bump::BUMPS + %w[current file show-next]).each do |bump|
+  (Bump::Bump::BUMPS + ["current", "file", "show-next"]).each do |bump|
     if bump == "current"
       desc "Show current gem version"
     elsif bump == "show-next"

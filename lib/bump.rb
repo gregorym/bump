@@ -1,5 +1,3 @@
-require 'pry'
-
 module Bump
   class InvalidIncrementError < StandardError; end
   class InvalidOptionError < StandardError; end
@@ -43,7 +41,7 @@ module Bump
         when "current"
           ["Current version: #{current}", 0]
         when "show-next"
-          raise InvalidIncrementError unless options[:increment]
+          raise InvalidIncrementError unless BUMPS.include?(options[:increment])
 
           increment = options[:increment]
           ["Next #{increment} version: #{next_version(current, increment)}", 0]
@@ -52,6 +50,8 @@ module Bump
         else
           raise InvalidOptionError
         end
+      rescue InvalidIncrementError
+        ["Invalid increment. Choose between #{BUMPS.join(',')}.", 1]
       rescue InvalidOptionError
         ["Invalid option. Choose between #{OPTIONS.join(',')}.", 1]
       rescue InvalidVersionError

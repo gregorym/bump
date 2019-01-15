@@ -26,8 +26,8 @@ OptionParser.new do |opts|
   opts.on("-h", "--help", "Show this.") { puts opts; exit }
 end.parse!
 
-unless (ARGV.size == 1 && ARGV.first != "set") \
- || (ARGV.size == 2 && %(set show-next).include?(ARGV.first))
+unless (ARGV.size == 1 && !["set", "show-next"].include?(ARGV.first)) \
+ || (ARGV.size == 2 && ["set", "show-next"].include?(ARGV.first))
   puts "Usage instructions: bump --help"
   exit 1
 end
