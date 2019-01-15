@@ -1,6 +1,7 @@
 require 'pry'
 
 module Bump
+  class InvalidIncrementError < StandardError; end
   class InvalidOptionError < StandardError; end
   class InvalidVersionError < StandardError; end
   class UnfoundVersionError < StandardError; end
@@ -41,7 +42,9 @@ module Bump
           bump_set(options[:version], options)
         when "current"
           ["Current version: #{current}", 0]
-        when "next"
+        when "show-next"
+          raise InvalidIncrementError unless options[:increment]
+
           increment = options[:increment]
           ["Next #{increment} version: #{next_version(current, increment)}", 0]
         when "file"

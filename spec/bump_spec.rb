@@ -117,7 +117,7 @@ describe Bump do
     end
 
     it "should show next patch version" do
-      bump("next patch").should include("4.2.4")
+      bump("show-next patch").should include("4.2.4")
     end
 
     it "should find version file" do
@@ -215,7 +215,7 @@ describe Bump do
     end
 
     it "show next minor version" do
-      bump("next minor").should include("1.3.0")
+      bump("show-next minor").should include("1.3.0")
     end
 
     it "show file path" do
@@ -280,7 +280,7 @@ describe Bump do
     end
 
     it "show next major version" do
-      bump("next major").should include("2.0.0")
+      bump("show-next major").should include("2.0.0")
     end
 
     it "show file" do
@@ -318,7 +318,7 @@ describe Bump do
       end
 
       it "show next pre-release version" do
-        bump("next pre").should include("1.2.3-beta")
+        bump("show-next pre").should include("1.2.3-beta")
       end
 
       it "show file path" do
@@ -464,7 +464,7 @@ describe Bump do
     end
 
     it "show next patch version" do
-      bump("next patch").should include("1.2.4")
+      bump("show-next patch").should include("1.2.4")
     end
 
     it "show file path" do
@@ -516,7 +516,7 @@ describe Bump do
       end
 
       it "show next patch version" do
-        bump("next patch").should include("1.2.4")
+        bump("show-next patch").should include("1.2.4")
         read(version_file).should include('  VERSION = "1.2.3"')
       end
 

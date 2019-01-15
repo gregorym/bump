@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'optparse'
-require 'pry'
 
 options = {}
 OptionParser.new do |opts|
@@ -8,14 +7,14 @@ OptionParser.new do |opts|
     Bump your gem version.
 
     Usage:
-        bump current         # show current version
-        bump next INCREMENT  # show next (pre|patch|minor|major) version of your gem
-        bump file            # show version file path
-        bump pre             # increase prerelease version of your gem (1.0.0-X) [alpha, beta, rc, ]
-        bump patch           # increase patch version of your gem (1.0.X)
-        bump minor           # increase minor version of your gem (1.X.0)
-        bump major           # increase major version of your gem (X.0.0)
-        bump set 1.2.3       # set the version number to the given value
+        bump current              # show current version
+        bump show-next INCREMENT  # show next (pre|patch|minor|major) version of your gem
+        bump file                 # show version file path
+        bump pre                  # increase prerelease version of your gem (1.0.0-X) [alpha, beta, rc, ]
+        bump patch                # increase patch version of your gem (1.0.X)
+        bump minor                # increase minor version of your gem (1.X.0)
+        bump major                # increase major version of your gem (X.0.0)
+        bump set 1.2.3            # set the version number to the given value
 
     Options:
   BANNER
@@ -28,13 +27,13 @@ OptionParser.new do |opts|
 end.parse!
 
 unless (ARGV.size == 1 && ARGV.first != "set") \
- || (ARGV.size == 2 && %(set next).include?(ARGV.first))
+ || (ARGV.size == 2 && %(set show-next).include?(ARGV.first))
   puts "Usage instructions: bump --help"
   exit 1
 end
 
 options[:version] = ARGV[1] if ARGV[0] == "set"
-options[:increment] = ARGV[1] if ARGV[0] == "next"
+options[:increment] = ARGV[1] if ARGV[0] == "show-next"
 
 require File.dirname(__FILE__) + '/../lib/bump'
 output, status = Bump::Bump.run(ARGV.first, options)

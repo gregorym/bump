@@ -17,9 +17,9 @@ Current version:
 
 > Current version: 0.1.2
 
-Next patch version:
+Show next patch version:
 
-    bump next patch
+    bump show-next patch
 
 > Next patch version: 0.1.3
 
@@ -87,7 +87,7 @@ require "bump/tasks"
 ```
 
     rake bump:current                           # display current version
-    rake bump:next INCREMENT=minor              # dispaly next minor version
+    rake bump:show-next INCREMENT=minor         # dispaly next minor version
     rake bump:file                              # display version file path
 
     # bumping using defaults for `COMMIT`, `TAG`, and `BUNDLE`
