@@ -41,10 +41,10 @@ module Bump
         when "current"
           ["Current version: #{current}", 0]
         when "show-next"
-          raise InvalidIncrementError unless BUMPS.include?(options[:increment])
-
           increment = options[:increment]
-          ["Next #{increment} version: #{next_version(current, increment)}", 0]
+          raise InvalidIncrementError unless BUMPS.include?(increment)
+
+          [next_version(increment), 0]
         when "file"
           ["Version file path: #{file}", 0]
         else
@@ -68,10 +68,10 @@ module Bump
         current_info.first
       end
 
-      def next_version(current, part)
+      def next_version(increment, current = Bump.current)
         current, prerelease = current.split('-')
         major, minor, patch, *other = current.split('.')
-        case part
+        case increment
         when "major"
           major = major.succ
           minor = 0
@@ -87,7 +87,7 @@ module Bump
           prerelease.strip! if prerelease.respond_to? :strip
           prerelease = PRERELEASE[PRERELEASE.index(prerelease).succ % PRERELEASE.length]
         else
-          raise "unknown part #{part.inspect}"
+          raise InvalidIncrementError
         end
         version = [major, minor, patch, *other].compact.join('.')
         [version, prerelease].compact.join('-')
@@ -148,9 +148,9 @@ module Bump
         end
       end
 
-      def bump_part(part, options)
+      def bump_part(increment, options)
         current, file = current_info
-        next_version = next_version(current, part)
+        next_version = next_version(increment, current)
         bump(file, current, next_version, options)
       end
 

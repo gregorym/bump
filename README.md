@@ -87,7 +87,7 @@ require "bump/tasks"
 ```
 
     rake bump:current                           # display current version
-    rake bump:show-next INCREMENT=minor         # dispaly next minor version
+    rake bump:show-next INCREMENT=minor         # display next minor version
     rake bump:file                              # display version file path
 
     # bumping using defaults for `COMMIT`, `TAG`, and `BUNDLE`
@@ -106,7 +106,7 @@ require "bump/tasks"
 ```ruby
 require "bump"
 Bump::Bump.current        # -> "1.2.3"
-Bump::Bump.next_version(Bump::Bump.current, "patch")        # -> "1.2.4"
+Bump::Bump.next_version("patch")        # -> "1.2.4"
 Bump::Bump.file           # -> "lib/foo/version.rb"
 Bump::Bump.run("patch")   # -> version changed
 Bump::Bump.run("patch", commit: false, bundle:false, tag:false) # -> version changed with options
