@@ -28,8 +28,6 @@ module Bump
       end
 
       def run(bump, options = {})
-        puts options
-        puts sanitized_options(options)
         options = defaults.merge(sanitized_options(options))
         options[:commit] = false unless File.directory?(".git")
 
