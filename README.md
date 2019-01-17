@@ -45,8 +45,8 @@ Will add a git tag with a tag prefix set defaulting to 'v' (if the current proje
 
 You can change the tag prefix by passing `--tag-prefix` option followed by a string or `FALSE` if you want no prefix.
 
-    bump patch --tag --tag-prefix v-
-    bump patch --tag --tag-prefix FALSE
+    bump patch --tag --tag-prefix v-     # tag with a prefix 'v-' ex. the tag will look like v-0.0.1
+    bump patch --tag --tag-prefix FALSE  # tag without a prefix ex. the tag will look like 0.0.1
 
 ### `--no-bundle`
 
@@ -98,7 +98,7 @@ require "bump/tasks"
     rake bump:patch TAG=false BUNDLE=false      # commit, but don't tag or run `bundle`
     rake bump:patch TAG=true                    # tag with prefix defaulting to 'v'
     rake bump:patch TAG=true TAG_PREFIX=false   # tag without a prefix
-    rake bump:patch TAG=true TAG_PREFIX=v-      # tag with a prefix
+    rake bump:patch TAG=true TAG_PREFIX=v-      # tag with a prefix 'v-' ex. the tag will look like v-0.0.1
     rake bump:patch COMMIT=false TAG=false      # don't commit, don't tag
     rake bump:minor BUNDLE=false                # don't run `bundle`
 
@@ -109,6 +109,9 @@ require "bump"
 Bump::Bump.current        # -> "1.2.3"
 Bump::Bump.file           # -> "lib/foo/version.rb"
 Bump::Bump.run("patch")   # -> version changed
+Bump::Bump.run("patch", tag: true) # -> version changed with tagging and default prefix 'v'
+Bump::Bump.run("patch", tag: true, tag_prefix: false) # -> version changed with tagging without prefix
+Bump::Bump.run("patch", tag: true, tag_prefix: 'v-') # -> version changed with tagging with '-v' as prefix
 Bump::Bump.run("patch", commit: false, bundle:false, tag:false) # -> version changed with options
 Bump::Bump.run("patch", commit_message: '[no ci]') # -> creates a commit message with 'v1.2.3 [no ci]' instead of default: 'v1.2.3'
 ```
