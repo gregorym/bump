@@ -1,4 +1,5 @@
 module Bump
+  class InvalidIncrementError < StandardError; end
   class InvalidOptionError < StandardError; end
   class InvalidVersionError < StandardError; end
   class UnfoundVersionError < StandardError; end
@@ -39,11 +40,18 @@ module Bump
           bump_set(options[:version], options)
         when "current"
           ["Current version: #{current}", 0]
+        when "show-next"
+          increment = options[:increment]
+          raise InvalidIncrementError unless BUMPS.include?(increment)
+
+          [next_version(increment), 0]
         when "file"
           ["Version file path: #{file}", 0]
         else
           raise InvalidOptionError
         end
+      rescue InvalidIncrementError
+        ["Invalid increment. Choose between #{BUMPS.join(',')}.", 1]
       rescue InvalidOptionError
         ["Invalid option. Choose between #{OPTIONS.join(',')}.", 1]
       rescue InvalidVersionError
@@ -58,6 +66,31 @@ module Bump
 
       def current
         current_info.first
+      end
+
+      def next_version(increment, current = Bump.current)
+        current, prerelease = current.split('-')
+        major, minor, patch, *other = current.split('.')
+        case increment
+        when "major"
+          major = major.succ
+          minor = 0
+          patch = 0
+          prerelease = nil
+        when "minor"
+          minor = minor.succ
+          patch = 0
+          prerelease = nil
+        when "patch"
+          patch = patch.succ
+        when "pre"
+          prerelease.strip! if prerelease.respond_to? :strip
+          prerelease = PRERELEASE[PRERELEASE.index(prerelease).succ % PRERELEASE.length]
+        else
+          raise InvalidIncrementError
+        end
+        version = [major, minor, patch, *other].compact.join('.')
+        [version, prerelease].compact.join('-')
       end
 
       def file
@@ -115,9 +148,9 @@ module Bump
         end
       end
 
-      def bump_part(part, options)
+      def bump_part(increment, options)
         current, file = current_info
-        next_version = next_version(current, part)
+        next_version = next_version(increment, current)
         bump(file, current, next_version, options)
       end
 
@@ -218,31 +251,6 @@ module Bump
         else
           raise TooManyVersionFilesError, files.join(", ")
         end
-      end
-
-      def next_version(current, part)
-        current, prerelease = current.split('-')
-        major, minor, patch, *other = current.split('.')
-        case part
-        when "major"
-          major = major.succ
-          minor = 0
-          patch = 0
-          prerelease = nil
-        when "minor"
-          minor = minor.succ
-          patch = 0
-          prerelease = nil
-        when "patch"
-          patch = patch.succ
-        when "pre"
-          prerelease.strip! if prerelease.respond_to? :strip
-          prerelease = PRERELEASE[PRERELEASE.index(prerelease).succ % PRERELEASE.length]
-        else
-          raise "unknown part #{part.inspect}"
-        end
-        version = [major, minor, patch, *other].compact.join('.')
-        [version, prerelease].compact.join('-')
       end
 
       def under_version_control?(file)

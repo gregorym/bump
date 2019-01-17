@@ -7,9 +7,11 @@ namespace :bump do
     abort unless status == 0
   end
 
-  (Bump::Bump::BUMPS + ["current", "file"]).each do |bump|
+  (Bump::Bump::BUMPS + ["current", "file", "show-next"]).each do |bump|
     if bump == "current"
       desc "Show current gem version"
+    elsif bump == "show-next"
+      desc "Show next #{Bump::Bump::BUMPS.join('|')} version."
     elsif bump == "file"
       desc "Show version file path"
     else
@@ -26,7 +28,8 @@ namespace :bump do
       options = {
         tag: ENV['TAG'],
         commit: ENV['COMMIT'],
-        bundle: ENV['BUNDLE']
+        bundle: ENV['BUNDLE'],
+        increment: ENV['INCREMENT']
       }
       run_bump.call(bump, Bump::Bump.parse_cli_options!(options))
     end
