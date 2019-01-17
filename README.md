@@ -39,9 +39,14 @@ If you don't want to make a commit after bumping, add the `--no-commit` option.
 
 ### `--tag`
 
-Will add a git tag (if the current project is a git repository and `--no-commit` has not been given).
+Will add a git tag with a tag prefix set defaulting to 'v' (if the current project is a git repository and `--no-commit` has not been given).
 
     bump patch --tag
+
+You can change the tag prefix by passing `--tag-prefix` option followed by a string or `FALSE` if you want no prefix.
+
+    bump patch --tag --tag-prefix v-
+    bump patch --tag --tag-prefix FALSE
 
 ### `--no-bundle`
 
@@ -91,6 +96,9 @@ require "bump/tasks"
 
     # bumping with option(s)
     rake bump:patch TAG=false BUNDLE=false      # commit, but don't tag or run `bundle`
+    rake bump:patch TAG=true                    # tag with prefix defaulting to 'v'
+    rake bump:patch TAG=true TAG_PREFIX=false   # tag without a prefix
+    rake bump:patch TAG=true TAG_PREFIX=v-      # tag with a prefix
     rake bump:patch COMMIT=false TAG=false      # don't commit, don't tag
     rake bump:minor BUNDLE=false                # don't run `bundle`
 
