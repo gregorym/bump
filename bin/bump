@@ -21,7 +21,7 @@ OptionParser.new do |opts|
   opts.on("-m", "--commit-message MSG", String, "Append MSG to the commit message.") { |msg| options[:commit_message] = msg }
   opts.on("--no-bundle", "Do not bundle.") { options[:bundle] = false }
   opts.on("--tag", "Create git tag from version (only if commit is true).") { options[:tag] = true }
-  opts.on("--tag-prefix TAG_PREFIX", String, "Prefix the tag with this string, ex. 'v'") { |tag_prefix| options[:tag_prefix] = tag_prefix }
+  opts.on("--tag-prefix TAG_PREFIX", String, "Prefix the tag with this string, defaults to 'v'") { |tag_prefix| options[:tag_prefix] = tag_prefix }
   opts.on("--replace-in FILE", String, "Replace old version with the new version additionally in this file") { |f| (options[:replace_in] ||= []) << f }
   opts.on("-h", "--help", "Show this.") { puts opts; exit }
 end.parse!

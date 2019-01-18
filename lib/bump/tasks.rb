@@ -25,7 +25,7 @@ namespace :bump do
       end
       options = {
         tag: ENV['TAG'],
-        tag_prefix: ENV['TAG_PREFIX'],#tag_prefix_value,
+        tag_prefix: ENV['TAG_PREFIX'],
         commit: ENV['COMMIT'],
         bundle: ENV['BUNDLE']
       }
@@ -36,13 +36,5 @@ namespace :bump do
   desc "Sets the version number using the VERSION environment variable"
   task :set do
     run_bump.call("set", version: ENV['VERSION'])
-  end
-
-  def tag_prefix_value
-    tag_prefix = ENV['TAG_PREFIX'].to_s
-
-    return 'v' if tag_prefix.empty?
-
-    tag_prefix.downcase.strip == 'false' ? '' : tag_prefix
   end
 end

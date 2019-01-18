@@ -134,14 +134,14 @@ module Bump
       end
 
       def commit_message(version, options)
-        base = "#{options[:tag_prefix]}#{version}"
-        options[:commit_message] ? "#{base} #{options[:commit_message]}" : base
+        tag = "#{options[:tag_prefix]}#{version}"
+        options[:commit_message] ? "#{tag} #{options[:commit_message]}" : tag
       end
 
       def commit(version, options)
-        base = "#{options[:tag_prefix]}#{version}"
+        tag = "#{options[:tag_prefix]}#{version}"
         system("git", "commit", "-m", commit_message(version, options))
-        system("git", "tag", "-a", "-m", "Bump to #{base}", base) if options[:tag]
+        system("git", "tag", "-a", "-m", "Bump to #{tag}", tag) if options[:tag]
       end
 
       def git_add(file)
