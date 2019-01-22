@@ -9,6 +9,10 @@ describe Bump do
     bump("current", fail: true).should include "Unable to find"
   end
 
+  it "should fail if invalid increment was given" do
+    bump("show-next wrong", fail: true).should include "Invalid increment"
+  end
+
   it "should fail if it cannot find version file" do
     bump("file", fail: true).should include "Unable to find"
   end
@@ -130,6 +134,10 @@ describe Bump do
       read(gemspec).should include('s.version = "4.2.3"')
     end
 
+    it "should show next patch version" do
+      bump("show-next patch").should include("4.2.4")
+    end
+
     it "should find version file" do
       bump("file").should include("fixture.gemspec")
     end
@@ -224,6 +232,10 @@ describe Bump do
       read(version_file).should include('  VERSION = "1.2.3"')
     end
 
+    it "show next minor version" do
+      bump("show-next minor").should include("1.3.0")
+    end
+
     it "show file path" do
       bump("file").should include(version_file)
       read(version_file).should include("VERSION = ")
@@ -285,6 +297,10 @@ describe Bump do
       read("VERSION").should include(version)
     end
 
+    it "show next major version" do
+      bump("show-next major").should include("2.0.0")
+    end
+
     it "show file" do
       bump("file").should include("VERSION")
     end
@@ -317,6 +333,10 @@ describe Bump do
       it "show current" do
         bump("current").should include(version)
         read("VERSION").should include(version)
+      end
+
+      it "show next pre-release version" do
+        bump("show-next pre").should include("1.2.3-beta")
       end
 
       it "show file path" do
@@ -461,6 +481,10 @@ describe Bump do
       read(version_file).should include('  VERSION = "1.2.3"')
     end
 
+    it "show next patch version" do
+      bump("show-next patch").should include("1.2.4")
+    end
+
     it "show file path" do
       bump("file").should include(version_file)
     end
@@ -506,6 +530,11 @@ describe Bump do
 
       it "show current" do
         bump("current").should include("1.2.3")
+        read(version_file).should include('  VERSION = "1.2.3"')
+      end
+
+      it "show next patch version" do
+        bump("show-next patch").should include("1.2.4")
         read(version_file).should include('  VERSION = "1.2.3"')
       end
 

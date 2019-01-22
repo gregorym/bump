@@ -18,6 +18,11 @@ describe "rake bump" do
     `git log -1 --pretty=format:'%s'`.should == "v1.3.0"
   end
 
+  it "shows next patch version" do
+    output = run "rake bump:show-next INCREMENT=patch"
+    output.should include("1.2.4")
+  end
+
   it "bumps a version and can optionally tag it with a prefix defaulting to 'v'" do
     run "rake bump:patch TAG=true"
     `git tag`.split("\n").last.should == "v1.2.4"

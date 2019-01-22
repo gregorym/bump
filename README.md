@@ -17,6 +17,12 @@ Current version:
 
 > Current version: 0.1.2
 
+Show next patch version:
+
+    bump show-next patch
+
+> Next patch version: 0.1.3
+
 Version file path:
 
     bump file
@@ -86,6 +92,7 @@ require "bump/tasks"
 ```
 
     rake bump:current                           # display current version
+    rake bump:show-next INCREMENT=minor         # display next minor version
     rake bump:file                              # display version file path
 
     # bumping using defaults for `COMMIT`, `TAG`, and `BUNDLE`
@@ -105,6 +112,7 @@ require "bump/tasks"
 ```ruby
 require "bump"
 Bump::Bump.current        # -> "1.2.3"
+Bump::Bump.next_version("patch")        # -> "1.2.4"
 Bump::Bump.file           # -> "lib/foo/version.rb"
 Bump::Bump.run("patch")   # -> version changed
 Bump::Bump.run("patch", tag: true, tag_prefix: 'v-') # -> version changed with tagging with '-v' as prefix
