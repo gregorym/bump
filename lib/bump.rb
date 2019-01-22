@@ -28,7 +28,7 @@ module Bump
       end
 
       def run(bump, options = {})
-        options = defaults.merge(sanitized_options(options))
+        options = defaults.merge(options)
         options[:commit] = false unless File.directory?(".git")
 
         case bump
@@ -73,12 +73,6 @@ module Bump
       end
 
       private
-
-      def sanitized_options(options)
-        options[:tag_prefix] = '' if options[:tag_prefix].to_s.downcase.strip == 'false'
-
-        options
-      end
 
       def parse_cli_options_value(value)
         case value

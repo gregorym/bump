@@ -98,10 +98,10 @@ describe Bump do
       `git tag -l`.should include 'v4.2.4'
     end
 
-    it "should tag the version without any prefix if --tag flag given and --tag-prefix is FALSE" do
+    it "should tag the version without any prefix if --tag flag given and --tag-prefix is ''" do
       write_gemspec
 
-      bump("patch --tag --tag-prefix FALSE")
+      bump('patch --tag --tag-prefix ""')
       `git tag -l`.should include '4.2.4'
     end
 

@@ -24,7 +24,7 @@ describe "rake bump" do
   end
 
   it "bumps a version and can optionally tag it without a prefix if tag_prefix is set to false" do
-    run "rake bump:patch TAG=true TAG_PREFIX=false"
+    run 'rake bump:patch TAG=true TAG_PREFIX=""'
     `git tag`.split("\n").last.should == "1.2.4"
   end
 

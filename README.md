@@ -46,7 +46,7 @@ Will add a git tag like `v1.2.3` (if the current project is a git repository and
 You can change the tag prefix by passing `--tag-prefix` option followed by a string or `FALSE` if you want no prefix.
 
     bump patch --tag --tag-prefix v-     # tag as v-1.2.3
-    bump patch --tag --tag-prefix FALSE  # tag as 1.2.3
+    bump patch --tag --tag-prefix ""     # tag as 1.2.3
 
 ### `--no-bundle`
 
