@@ -23,9 +23,19 @@ describe "rake bump" do
     output.should include("1.2.4")
   end
 
-  it "bumps a version and can optionally tag it" do
+  it "bumps a version and can optionally tag it with a prefix defaulting to 'v'" do
     run "rake bump:patch TAG=true"
     `git tag`.split("\n").last.should == "v1.2.4"
+  end
+
+  it "bumps a version and can optionally tag it without a prefix if tag_prefix is set to false" do
+    run 'rake bump:patch TAG=true TAG_PREFIX=""'
+    `git tag`.split("\n").last.should == "1.2.4"
+  end
+
+  it "bumps a version and can optionally tag it with the given prefix if tag_prefix is set to a value" do
+    run "rake bump:patch TAG=true TAG_PREFIX=v-"
+    `git tag`.split("\n").last.should == "v-1.2.4"
   end
 
   it "fails with rake arguments" do

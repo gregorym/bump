@@ -95,11 +95,25 @@ describe Bump do
       `git status`.should include "Untracked files:"
     end
 
-    it "should tag the version if --tag flag given" do
+    it "should tag the version with default prefix 'v' if --tag flag given and --tag-prefix is not given" do
       write_gemspec
 
       bump("patch --tag")
       `git tag -l`.should include 'v4.2.4'
+    end
+
+    it "should tag the version without any prefix if --tag flag given and --tag-prefix is ''" do
+      write_gemspec
+
+      bump('patch --tag --tag-prefix ""')
+      `git tag -l`.should include '4.2.4'
+    end
+
+    it "should tag the version with the given prefix value if --tag flag given and --tag-prefix is passed with a value" do
+      write_gemspec
+
+      bump("patch --tag --tag-prefix v-")
+      `git tag -l`.should include 'v-4.2.4'
     end
 
     it "should not tag the version if --no-commit and --tag flag given" do

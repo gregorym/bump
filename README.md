@@ -45,9 +45,14 @@ If you don't want to make a commit after bumping, add the `--no-commit` option.
 
 ### `--tag`
 
-Will add a git tag (if the current project is a git repository and `--no-commit` has not been given).
+Will add a git tag like `v1.2.3` (if the current project is a git repository and `--no-commit` has not been given).
 
     bump patch --tag
+
+The `--tag-prefix` option can change the tag prefix:
+
+    bump patch --tag --tag-prefix v-     # tag as v-1.2.3
+    bump patch --tag --tag-prefix ""     # tag as 1.2.3
 
 ### `--no-bundle`
 
@@ -98,6 +103,7 @@ require "bump/tasks"
 
     # bumping with option(s)
     rake bump:patch TAG=false BUNDLE=false      # commit, but don't tag or run `bundle`
+    rake bump:patch TAG=true TAG_PREFIX=v-      # tag with a prefix 'v-' ex. the tag will look like v-0.0.1
     rake bump:patch COMMIT=false TAG=false      # don't commit, don't tag
     rake bump:minor BUNDLE=false                # don't run `bundle`
 
@@ -109,6 +115,7 @@ Bump::Bump.current        # -> "1.2.3"
 Bump::Bump.next_version("patch")        # -> "1.2.4"
 Bump::Bump.file           # -> "lib/foo/version.rb"
 Bump::Bump.run("patch")   # -> version changed
+Bump::Bump.run("patch", tag: true, tag_prefix: 'v-') # -> version changed with tagging with '-v' as prefix
 Bump::Bump.run("patch", commit: false, bundle:false, tag:false) # -> version changed with options
 Bump::Bump.run("patch", commit_message: '[no ci]') # -> creates a commit message with 'v1.2.3 [no ci]' instead of default: 'v1.2.3'
 ```

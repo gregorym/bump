@@ -27,6 +27,7 @@ namespace :bump do
       end
       options = {
         tag: ENV['TAG'],
+        tag_prefix: ENV['TAG_PREFIX'],
         commit: ENV['COMMIT'],
         bundle: ENV['BUNDLE'],
         increment: ENV['INCREMENT']
