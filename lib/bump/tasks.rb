@@ -18,8 +18,8 @@ namespace :bump do
       desc "Bump #{bump} part of gem version"
     end
 
-    task bump, :tag do |_task, args|
-      if args.tag
+    task bump, :no_args do |_task, args|
+      if args.no_args
         raise(
           RakeArgumentsDeprecatedError,
           "rake arguments are deprecated, use TAG=false to disable tagging"
