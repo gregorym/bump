@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.2 # match lowest supported ruby version
+  TargetRubyVersion: 2.3 # match lowest supported ruby version <-> gemspec
 
 Metrics:
   Enabled: false
@@ -39,3 +39,6 @@ Style/Semicolon:
 # [:a] is easier to read than %i[a]
 Style/SymbolArray:
   EnforcedStyle: brackets
+
+Layout/LineLength:
+  Enabled: false
