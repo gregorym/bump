@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Bump
   class InvalidIncrementError < StandardError; end
   class InvalidOptionError < StandardError; end

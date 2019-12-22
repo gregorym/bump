@@ -3,10 +3,10 @@ sudo: false
 language: ruby
 cache: bundler
 rvm:
-  - 2.2
   - 2.3
   - 2.4
   - 2.5
+  - 2.6
   - jruby
   - rbx-3
 before_script:
@@ -15,9 +15,8 @@ before_script:
 env:
   - JRUBY_OPTS='--debug'
 script: bundle exec rake spec
-
 matrix:
   include:
     - name: rubocop
       script: bundle exec rake rubocop
-      rvm: 2.2 # always match lowest supported version
+      rvm: 2.3 # always match lowest supported version
