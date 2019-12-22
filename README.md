@@ -1,9 +1,11 @@
 [![Build Status](https://travis-ci.org/gregorym/bump.svg)](https://travis-ci.org/gregorym/bump)
 [![Gem Version](https://badge.fury.io/rb/bump.svg)](http://badge.fury.io/rb/bump)
 
-# Introduction
+A gem to bump versions of gems and chef-cookbooks.
 
-Bump is a gem that will simplify the way you build gems and chef-cookbooks.
+ - bumps version major / minor / patch / pre
+ - bundles
+ - commits changes
 
 # Installation
 
@@ -11,35 +13,35 @@ Bump is a gem that will simplify the way you build gems and chef-cookbooks.
 
 # Usage
 
-Current version:
+### Show current version
 
     bump current
 
 > Current version: 0.1.2
 
-Show next patch version:
-
-    bump show-next patch
-
-> Next patch version: 0.1.3
-
-Version file path:
-
-    bump file
-
-> Version file path: lib/foo/version.rb
-
-Bump (major, minor, patch, pre):
+### Bump (major, minor, patch, pre)
 
     bump patch
 
 > Bump version 0.1.2 to 0.1.3
 
+### Show next version
+
+    bump show-next patch
+
+> Next patch version: 0.1.3
+
+### Show version file path
+
+    bump file
+
+> Version file path: lib/foo/version.rb
+
 ## Options
 
 ### `--no-commit`
 
-If you don't want to make a commit after bumping, add the `--no-commit` option.
+Do not commit after bumping.
 
     bump patch --no-commit
 
@@ -56,37 +58,37 @@ The `--tag-prefix` option can change the tag prefix:
 
 ### `--no-bundle`
 
-If you don't want to run the `bundle` command after bumping, add the `--no-bundle` option.
+Do not run `bundle` command after bumping.
 
     bump patch --no-bundle
 
 ### `--replace-in`
 
-If you want to bump the version in additional files
+Bump the version in additional files.
 
     bump patch --reaplace-in Readme.md
 
 ### `--commit-message [MSG], -m [MSG]`
 
-If you want to append additional information to the commit message, pass it in using the `--commit-message [MSG]` or `-m [MSG]` option.
+Append additional information to the commit message.
 
-    bump patch --commit-message [no-ci]
+    bump patch --commit-message "Something extra"
 
 or
 
-    bump patch -m [no-cli]
+    bump patch -m "Something extra"
 
-### Rake
+## Rake
 
 ```ruby
 # Rakefile
 require "bump/tasks"
 
 #
-# if you want to always tag the version, add:
-# Bump.tag_by_default = true
+# do not always tag the version
+# Bump.tag_by_default = false
 #
-# if you want to bump the version in additional files, add:
+# bump the version in additional files
 # Bump.replace_in_default = ["Readme.md"]
 
 ```
@@ -107,7 +109,7 @@ require "bump/tasks"
     rake bump:patch COMMIT=false TAG=false      # don't commit, don't tag
     rake bump:minor BUNDLE=false                # don't run `bundle`
 
-### Ruby
+## Ruby
 
 ```ruby
 require "bump"
