@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "tempfile"
 
 describe Bump do
   let(:gemspec) { "fixture.gemspec" }
@@ -440,6 +441,30 @@ describe Bump do
     end
   end
 
+  context "with Changelog" do
+    before do
+      write_gemspec('"1.0.0"')
+      write "CHANGELOG.md", <<-FILE.gsub(/^\s+/, "")
+        ## Next
+        - foo
+        ## v1.0.0
+        - bar
+      FILE
+      `git add CHANGELOG.md #{gemspec}`
+    end
+
+    it "updates changelog" do
+      bump("patch --changelog")
+      read("CHANGELOG.md").should include "## v1.0.1"
+      `git status`.should include "nothing to commit"
+    end
+
+    it "complains when changelog is not found" do
+      File.delete "CHANGELOG.md"
+      bump("patch --changelog", fail: true)
+    end
+  end
+
   context ".current" do
     it "returns the version as a string" do
       write_gemspec
@@ -565,12 +590,65 @@ describe Bump do
     end
   end
 
-  context 'verify private class mothods' do
+  context 'verify private class methods' do
     it 'raise exception when called' do
       -> { Bump::Bump.bump('foo', '1.2.3', '1.2.4', {}) }.should raise_error NoMethodError
     end
+
     it 'has private methods' do
       Bump::Bump.private_methods(false).size.should > Object.private_methods(false).size
+    end
+  end
+
+  context '.bump_changelog' do
+    it "bumps" do
+      Tempfile.create('test-bump_changelog') do |f|
+        f.write <<-TEXT.gsub(/^\s+/, "")
+          ## Next
+          - foo
+          ## v1.2.3
+          - bar
+        TEXT
+        f.close
+        Bump::Bump.send(:bump_changelog, f.path, '1.3.0').should eq nil
+        File.read(f.path).should == <<-TEXT.gsub(/^\s+/, "")
+          ## Next
+          ## v1.3.0
+          - foo
+          ## v1.2.3
+          - bar
+        TEXT
+      end
+    end
+
+    it "adds date" do
+      Tempfile.create('test-bump_changelog') do |f|
+        f.write <<-TEXT.gsub(/^\s+/, "")
+          ## Next
+          - foo
+          ## Version 1.2.3 released on 2018-10-11
+          - bar
+        TEXT
+        f.close
+        Bump::Bump.send(:bump_changelog, f.path, '1.3.0').should eq nil
+        File.read(f.path).should == <<-TEXT.gsub(/^\s+/, "")
+          ## Next
+          ## Version 1.3.0 released on #{Time.now.strftime('%Y-%m-%d')}
+          - foo
+          ## Version 1.2.3 released on 2018-10-11
+          - bar
+        TEXT
+      end
+    end
+
+    it "shows error when it cannot find a line" do
+      Tempfile.create('test-bump_changelog') do |f|
+        f.write <<-TEXT.gsub(/^\s+/, "")
+          Wut ?
+        TEXT
+        f.close
+        Bump::Bump.send(:bump_changelog, f.path, '1.3.0').should == "Unable to find previous version"
+      end
     end
   end
 

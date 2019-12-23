@@ -78,6 +78,19 @@ or
 
     bump patch -m "Something extra"
 
+### `--changelog`
+
+Update `CHANGELOG.md` when bumping.
+This requires a heading (starting with `##`) that includes the previous version and a heading above that, for example:
+
+```markdown
+### Next
+- Added bar
+
+### v0.0.0 - 2019-12-24
+- Added foo
+```
+
 ## Rake
 
 ```ruby
@@ -90,7 +103,9 @@ require "bump/tasks"
 #
 # bump the version in additional files
 # Bump.replace_in_default = ["Readme.md"]
-
+#
+# Maintain changelog:
+# Bump.changelog = true
 ```
 
     rake bump:current                           # display current version

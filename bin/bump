@@ -27,6 +27,7 @@ OptionParser.new do |opts|
   opts.on("--tag", "Create git tag from version (only if commit is true).") { options[:tag] = true }
   opts.on("--tag-prefix TAG_PREFIX", "Prefix the tag with this string, ex. 'v'") { |tag_prefix| options[:tag_prefix] = tag_prefix }
   opts.on("--replace-in FILE", String, "Replace old version with the new version additionally in this file") { |f| (options[:replace_in] ||= []) << f }
+  opts.on("--changelog", "Update CHANGELOG.md") { options[:changelog] = true }
   opts.on("-h", "--help", "Show this.") { puts opts; exit }
 end.parse!
 
