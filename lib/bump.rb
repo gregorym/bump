@@ -10,7 +10,7 @@ module Bump
   class RakeArgumentsDeprecatedError < StandardError; end
 
   class <<self
-    attr_accessor :tag_by_default, :replace_in_default
+    attr_accessor :tag_by_default, :replace_in_default, :changelog
   end
 
   class Bump
@@ -25,6 +25,7 @@ module Bump
           tag: ::Bump.tag_by_default,
           tag_prefix: 'v',
           commit: true,
+          changelog: ::Bump.changelog || false, # TODO: default to true with opt-out once it gets more stable
           bundle: File.exist?("Gemfile"),
           replace_in: ::Bump.replace_in_default || []
         }
@@ -136,6 +137,17 @@ module Bump
           end
         end
 
+        # changelog if needed
+        if options[:changelog]
+          log = Dir["CHANGELOG.md"].first
+          return ["Did not find CHANGELOG.md", 1] unless log
+
+          error = bump_changelog(log, next_version)
+          return [error, 1] if error
+
+          git_add log if options[:commit]
+        end
+
         # commit staged changes
         commit next_version, options if options[:commit]
 
@@ -160,6 +172,24 @@ module Bump
       def bump_set(next_version, options)
         current, file = current_info
         bump(file, current, next_version, options)
+      end
+
+      def bump_changelog(file, current)
+        parts = File.read(file).split(/(^##+.*)/) # headlines and their content
+        prev_index = parts.index { |p| p =~ /(^##+.*(\d+\.\d+\.\d+(\.[a-z]+)?).*)/ } # position of previous version
+        return "Unable to find previous version" unless prev_index
+
+        # reuse the same style by just swapping the numbers
+        new_heading = "\n" + parts[prev_index].sub($2, current)
+
+        # add current date if previous heading used that
+        new_heading.sub!(/\d\d\d\d-\d\d-\d\d/, Time.now.strftime('%Y-%m-%d'))
+
+        # put our new heading underneath the "Next" heading, which should be above the last version
+        parts.insert prev_index - 1, new_heading
+
+        File.write file, parts.join("")
+        nil
       end
 
       def commit_message(version, options)

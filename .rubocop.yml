@@ -42,3 +42,6 @@ Style/SymbolArray:
 
 Layout/LineLength:
   Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false
