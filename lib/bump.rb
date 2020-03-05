@@ -145,9 +145,7 @@ module Bump
           error = bump_changelog(log, next_version)
           return [error, 1] if error
 
-          if editor = options[:editor]
-            open_changelog(editor, log)
-          end
+          open_changelog(log) if options[:editor]
 
           git_add log if options[:commit]
         end
@@ -159,11 +157,14 @@ module Bump
         ["Bump version #{current} to #{next_version}", 0]
       end
 
-      def open_changelog(editor, log)
-        system(editor, log)
-        puts "Ready with your Changelog? Y/n"
-        user_input_after_changelog = STDIN.gets.chomp
-        return ["Stopped the bump, files are staged. But not commited", 1] if user_input_after_changelog == "n"
+      def open_changelog(log)
+        editor = ENV['EDITOR'] || "vi"
+
+        if editor.include?("subl")
+          `#{editor} #{log}`
+        else
+          system(editor, log)
+        end
       end
 
       def command_exists?(name)
