@@ -145,10 +145,7 @@ module Bump
           error = bump_changelog(log, next_version)
           return [error, 1] if error
 
-          `subl #{log}`
-          puts "Ready with your Changelog? Y/n"
-          option = STDIN.gets.chomp
-          return ["Stopped the bump, files are staged. But not commited", 1] if option == "n"
+          open_changelog(options, log)
 
           git_add log if options[:commit]
         end
@@ -158,6 +155,21 @@ module Bump
 
         # tell user the result
         ["Bump version #{current} to #{next_version}", 0]
+      end
+
+      def open_changelog options, log
+        if options[:editor]
+          return ["Could not find '#{options[:editor]}'", 1] unless command_exists?(options[:editor])
+          system(options[:editor], log)
+          puts "Ready with your Changelog? Y/n"
+          user_input_after_changelog = STDIN.gets.chomp
+          return ["Stopped the bump, files are staged. But not commited", 1] if user_input_after_changelog == "n"
+        end
+      end
+
+      def command_exists? name
+        `which #{name}`
+        $?.success?
       end
 
       def bundler_with_clean_env(&block)
