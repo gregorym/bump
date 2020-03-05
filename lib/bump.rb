@@ -167,11 +167,6 @@ module Bump
         end
       end
 
-      def command_exists?(name)
-        `which #{name}`
-        $?.success?
-      end
-
       def bundler_with_clean_env(&block)
         if defined?(Bundler)
           Bundler.with_clean_env(&block)
