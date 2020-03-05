@@ -147,7 +147,7 @@ module Bump
 
           open_changelog(log) if options[:changelog] == :editor
 
-          # git_add log if options[:commit]
+          git_add log if options[:commit]
         end
 
         # commit staged changes
