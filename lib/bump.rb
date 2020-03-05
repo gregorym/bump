@@ -157,17 +157,18 @@ module Bump
         ["Bump version #{current} to #{next_version}", 0]
       end
 
-      def open_changelog options, log
+      def open_changelog(options, log)
         if options[:editor]
           return ["Could not find '#{options[:editor]}'", 1] unless command_exists?(options[:editor])
           system(options[:editor], log)
           puts "Ready with your Changelog? Y/n"
           user_input_after_changelog = STDIN.gets.chomp
           return ["Stopped the bump, files are staged. But not commited", 1] if user_input_after_changelog == "n"
+          
         end
       end
 
-      def command_exists? name
+      def command_exists?(name)
         `which #{name}`
         $?.success?
       end
