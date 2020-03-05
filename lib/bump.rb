@@ -145,9 +145,9 @@ module Bump
           error = bump_changelog(log, next_version)
           return [error, 1] if error
 
-          open_changelog(log) if options[:editor]
+          open_changelog(log) if options[:changelog] == :editor
 
-          git_add log if options[:commit]
+          # git_add log if options[:commit]
         end
 
         # commit staged changes
