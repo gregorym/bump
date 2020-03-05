@@ -145,6 +145,11 @@ module Bump
           error = bump_changelog(log, next_version)
           return [error, 1] if error
 
+          `subl #{log}`
+          puts "Ready with your Changelog? Y/n"
+          option = STDIN.gets.chomp
+          return ["Stopped the bump, files are staged. But not commited", 1] if option == "n"
+
           git_add log if options[:commit]
         end
 
