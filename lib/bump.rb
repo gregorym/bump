@@ -159,12 +159,7 @@ module Bump
 
       def open_changelog(log)
         editor = ENV['EDITOR'] || "vi"
-
-        if editor.include?("subl")
-          `#{editor} #{log}`
-        else
-          system(editor, log)
-        end
+        system "#{editor} #{log}"
       end
 
       def bundler_with_clean_env(&block)
