@@ -93,19 +93,13 @@ This requires a heading (starting with `##`) that includes the previous version 
 
 ### `--edit-changelog`
 
-Update CHANGELOG.md when bumping.
-Opens the changelog in an editor specified in `$EDITOR`, waits for the editor to be closed and continues.
+Updates CHANGELOG.md when bumping (see above), and 
+opens the changelog in an editor specified in `$EDITOR` (or `vi`), 
+then waits for the editor to be closed and continues.
 
-If no `$EDITOR` is set it will use `vi` by default.
-
-    bump patch --edit-changelog
-
-If `$EDITOR` set it will use that.
-
-    export EDITOR="subl -n -w"
-    bump patch --edit-changelog
-
-
+```bash
+EDITOR="subl -n -w" bump patch --edit-changelog
+```
 
 ## Rake
 

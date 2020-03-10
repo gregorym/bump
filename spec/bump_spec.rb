@@ -463,6 +463,12 @@ describe Bump do
       File.delete "CHANGELOG.md"
       bump("patch --changelog", fail: true)
     end
+
+    it "can wait for editor" do
+      with_env "EDITOR" => "echo edit" do
+        bump("patch --edit-changelog").should include("edit CHANGELOG.md\n[master")
+      end
+    end
   end
 
   context ".current" do

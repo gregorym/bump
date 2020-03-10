@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
+require "rspec/support/spec/shell_out"
 require "bump"
 
 module SpecHelpers
@@ -41,5 +42,6 @@ end
 RSpec.configure do |config|
   config.expect_with(:rspec) { |c| c.syntax = :should }
   config.include SpecHelpers::InstanceMethods
+  config.include RSpec::Support::ShellOut
   config.extend SpecHelpers::ClassMethods
 end
