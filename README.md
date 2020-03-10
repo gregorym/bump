@@ -80,7 +80,7 @@ or
 
 ### `--changelog`
 
-Update `CHANGELOG.md` when bumping.
+Updates `CHANGELOG.md` when bumping.
 This requires a heading (starting with `##`) that includes the previous version and a heading above that, for example:
 
 ```markdown
@@ -90,6 +90,22 @@ This requires a heading (starting with `##`) that includes the previous version 
 ### v0.0.0 - 2019-12-24
 - Added foo
 ```
+
+### `--edit-changelog`
+
+Update CHANGELOG.md when bumping.
+Opens the changelog in an editor specified in `$EDITOR`, waits for the editor to be closed and continues.
+
+If no `$EDITOR` is set it will use `vi` by default.
+
+    bump patch --edit-changelog
+
+If `$EDITOR` set it will use that.
+
+    export EDITOR="subl -n -w"
+    bump patch --edit-changelog
+
+
 
 ## Rake
 

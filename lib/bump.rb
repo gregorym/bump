@@ -145,6 +145,8 @@ module Bump
           error = bump_changelog(log, next_version)
           return [error, 1] if error
 
+          open_changelog(log) if options[:changelog] == :editor
+
           git_add log if options[:commit]
         end
 
@@ -153,6 +155,11 @@ module Bump
 
         # tell user the result
         ["Bump version #{current} to #{next_version}", 0]
+      end
+
+      def open_changelog(log)
+        editor = ENV['EDITOR'] || "vi"
+        system "#{editor} #{log}"
       end
 
       def bundler_with_clean_env(&block)
