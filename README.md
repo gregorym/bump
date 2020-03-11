@@ -66,7 +66,7 @@ Do not run `bundle` command after bumping.
 
 Bump the version in additional files.
 
-    bump patch --reaplace-in Readme.md
+    bump patch --replace-in Readme.md
 
 ### `--commit-message [MSG], -m [MSG]`
 
