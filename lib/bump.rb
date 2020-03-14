@@ -187,13 +187,18 @@ module Bump
         return "Unable to find previous version" unless prev_index
 
         # reuse the same style by just swapping the numbers
-        new_heading = "\n" + parts[prev_index].sub($2, current)
-
+        new_heading = parts[prev_index].sub($2, current)
         # add current date if previous heading used that
         new_heading.sub!(/\d\d\d\d-\d\d-\d\d/, Time.now.strftime('%Y-%m-%d'))
 
-        # put our new heading underneath the "Next" heading, which should be above the last version
-        parts.insert prev_index - 1, new_heading
+        if prev_index < 2
+          # previous version is first '##' element (no '## Next' present), add line feed after version to avoid
+          # '## v1.0.1## v1.0.0'
+          parts.insert prev_index - 1, new_heading + "\n"
+        else
+          # put our new heading underneath the "Next" heading, which should be above the last version
+          parts.insert prev_index - 1, "\n" + new_heading
+        end
 
         File.write file, parts.join("")
         nil
