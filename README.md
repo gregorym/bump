@@ -116,6 +116,8 @@ require "bump/tasks"
 #
 # Maintain changelog:
 # Bump.changelog = true
+# Opens the changelog in an editor when bumping
+# Bump.changelog = :editor
 ```
 
     rake bump:current                           # display current version
