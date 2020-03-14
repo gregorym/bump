@@ -469,6 +469,23 @@ describe Bump do
         bump("patch --edit-changelog").should include("edit CHANGELOG.md\n[master")
       end
     end
+
+    context "Changelog without ## Next" do
+      before do
+        write_gemspec('"1.0.0"')
+        write "CHANGELOG.md", <<-FILE.gsub(/^\s+/, "")
+          ## v1.0.0
+          - bar
+        FILE
+        `git add CHANGELOG.md #{gemspec}`
+      end
+
+      it "updates changelog" do
+        bump("patch --changelog")
+        read("CHANGELOG.md").should start_with "## v1.0.1\n## v1.0.0"
+        `git status`.should include "nothing to commit"
+      end
+    end
   end
 
   context ".current" do
