@@ -653,7 +653,7 @@ describe Bump do
           Wut ?
         TEXT
         f.close
-        Bump::Bump.send(:bump_changelog, f.path, '1.3.0').should == "Unable to find previous version"
+        Bump::Bump.send(:bump_changelog, f.path, '1.3.0').should == "Unable to find previous version in CHANGELOG.md"
       end
     end
   end

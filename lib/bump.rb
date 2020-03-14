@@ -184,7 +184,7 @@ module Bump
       def bump_changelog(file, current)
         parts = File.read(file).split(/(^##+.*)/) # headlines and their content
         prev_index = parts.index { |p| p =~ /(^##+.*(\d+\.\d+\.\d+(\.[a-z]+)?).*)/ } # position of previous version
-        return "Unable to find previous version" unless prev_index
+        return "Unable to find previous version in CHANGELOG.md" unless prev_index
 
         # reuse the same style by just swapping the numbers
         new_heading = "\n" + parts[prev_index].sub($2, current)
