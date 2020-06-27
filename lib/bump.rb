@@ -164,7 +164,11 @@ module Bump
 
       def bundler_with_clean_env(&block)
         if defined?(Bundler)
-          Bundler.with_clean_env(&block)
+          if Bundler.respond_to?(:with_unbundled_env)
+            Bundler.with_unbundled_env(&block)
+          else
+            Bundler.with_clean_env(&block)
+          end
         else
           yield
         end

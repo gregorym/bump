@@ -403,7 +403,7 @@ describe Bump do
         gemspec
       RUBY
       `git add Gemfile #{gemspec}`
-      Bundler.with_clean_env { run("bundle") }
+      bundler_with_clean_env { run("bundle") }
       `git add Gemfile.lock`
     end
 
@@ -707,5 +707,13 @@ describe Bump do
     yield
   ensure
     File.unlink file
+  end
+
+  def bundler_with_clean_env(&block)
+    if Bundler.respond_to?(:with_unbundled_env)
+      Bundler.with_unbundled_env(&block)
+    else
+      Bundler.with_clean_env(&block)
+    end
   end
 end
