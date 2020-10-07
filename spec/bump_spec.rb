@@ -133,7 +133,7 @@ describe Bump do
     end
 
     it "should find current version" do
-      bump("current").should include("4.2.3")
+      bump("current").should eq("4.2.3\n")
       read(gemspec).should include('s.version = "4.2.3"')
     end
 
@@ -142,7 +142,7 @@ describe Bump do
     end
 
     it "should find version file" do
-      bump("file").should include("fixture.gemspec")
+      bump("file").should eq("fixture.gemspec\n")
     end
 
     it "should bump patch" do

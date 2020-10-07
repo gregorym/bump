@@ -17,7 +17,7 @@ A gem to bump versions of gems and chef-cookbooks.
 
     bump current
 
-> Current version: 0.1.2
+> 0.1.2
 
 ### Bump (major, minor, patch, pre)
 
@@ -29,13 +29,13 @@ A gem to bump versions of gems and chef-cookbooks.
 
     bump show-next patch
 
-> Next patch version: 0.1.3
+> 0.1.3
 
 ### Show version file path
 
     bump file
 
-> Version file path: lib/foo/version.rb
+> lib/foo/version.rb
 
 ## Options
 
@@ -93,8 +93,8 @@ This requires a heading (starting with `##`) that includes the previous version 
 
 ### `--edit-changelog`
 
-Updates CHANGELOG.md when bumping (see above), and 
-opens the changelog in an editor specified in `$EDITOR` (or `vi`), 
+Updates CHANGELOG.md when bumping (see above), and
+opens the changelog in an editor specified in `$EDITOR` (or `vi`),
 then waits for the editor to be closed and continues.
 
 ```bash
