@@ -199,6 +199,18 @@ describe Bump do
       end
     end
 
+    context "when value_only is not specified" do
+      it "includes descriptive text" do
+        bump("current").should include("Current version:")
+      end
+    end
+
+    context "when value_only is specified" do
+      it "only returns the version" do
+        bump("current --value-only").should eq("4.2.3\n")
+      end
+    end
+
     it "fails when asked to bump in missing additional files" do
       bump("patch --replace-in Readme.md", fail: true)
     end
@@ -240,7 +252,14 @@ describe Bump do
     end
 
     it "show file path" do
-      bump("file").should include(version_file)
+      output = bump("file")
+      output.should include(version_file)
+      output.should include("Version file path:")
+      read(version_file).should include("VERSION = ")
+    end
+
+    it "show file path with --value-only" do
+      bump("file --value-only").should eq(version_file + "\n")
       read(version_file).should include("VERSION = ")
     end
 
