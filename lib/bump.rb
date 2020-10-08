@@ -154,7 +154,7 @@ module Bump
         commit next_version, options if options[:commit]
 
         # tell user the result
-        [options[:value_only] ? next_version : "Bump version #{current} to #{next_version}", 0]
+        [next_version, 0]
       end
 
       def open_changelog(log)
