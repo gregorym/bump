@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Gem::Specification.new "bump" do |s|
-  s.version = "0.8.0"
+  s.version = "0.9.0"
   s.author = "Gregory Marcilhacy"
   s.email = "g.marcilhacy@gmail.com"
   s.homepage = "https://github.com/gregorym/bump"
