@@ -43,14 +43,14 @@ module Bump
 
           bump_set(options[:version], options)
         when "current"
-          [options[:value_only] ? current : "Current version: #{current}", 0]
+          [current, 0]
         when "show-next"
           increment = options[:increment]
           raise InvalidIncrementError unless BUMPS.include?(increment)
 
           [next_version(increment), 0]
         when "file"
-          [options[:value_only] ? file : "Version file path: #{file}", 0]
+          [file, 0]
         else
           raise InvalidOptionError
         end
