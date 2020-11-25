@@ -135,6 +135,7 @@ require "bump/tasks"
     rake bump:patch TAG=true TAG_PREFIX=v-      # tag with a prefix 'v-' ex. the tag will look like v-0.0.1
     rake bump:patch COMMIT=false TAG=false      # don't commit, don't tag
     rake bump:minor BUNDLE=false                # don't run `bundle`
+    rake bump:minor COMMIT_MESSAGE="release it" # custom commit message, appended to version
 
 ## Ruby
 
