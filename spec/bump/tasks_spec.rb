@@ -61,6 +61,13 @@ describe "rake bump" do
     `git log -1 --pretty=format:'%s'`.should == "v1.3.0"
   end
 
+  it "appends custom commit message" do
+    output = run "COMMIT_MESSAGE='release' rake bump:minor"
+    output.should include("1.3.0")
+    read("VERSION").should == "1.3.0\n"
+    `git log -1 --pretty=format:'%s'`.should == "v1.3.0 release"
+  end
+
   it "fails when it cannot bump" do
     write "VERSION", "AAA"
     run "rake bump:minor", fail: true

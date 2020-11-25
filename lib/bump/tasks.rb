@@ -31,6 +31,7 @@ namespace :bump do
         tag: ENV['TAG'],
         tag_prefix: ENV['TAG_PREFIX'],
         commit: ENV['COMMIT'],
+        commit_message: ENV['COMMIT_MESSAGE'],
         bundle: ENV['BUNDLE'],
         increment: ENV['INCREMENT']
       }
