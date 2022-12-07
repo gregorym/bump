@@ -33,7 +33,7 @@ module Bump
 
       def run(bump, options = {})
         options = defaults.merge(options)
-        options[:commit] = false unless File.directory?(".git")
+        options[:commit] = false unless File.exist?(".git")
 
         case bump
         when *BUMPS
