@@ -9,7 +9,7 @@ module Bump
   class UnfoundVersionFileError < StandardError; end
   class RakeArgumentsDeprecatedError < StandardError; end
 
-  class <<self
+  class << self
     attr_accessor :tag_by_default, :replace_in_default, :changelog
   end
 
