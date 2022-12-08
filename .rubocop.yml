@@ -1,5 +1,7 @@
 AllCops:
-  TargetRubyVersion: 2.3 # match lowest supported ruby version <-> gemspec
+  TargetRubyVersion: 2.7 # match lowest supported ruby version <-> gemspec
+  SuggestExtensions: false
+  NewCops: enable
 
 Metrics:
   Enabled: false
@@ -44,4 +46,16 @@ Layout/LineLength:
   Enabled: false
 
 Style/PerlBackrefs:
+  Enabled: false
+
+# foo + "\n" is easier to read than "#{foo}\n"
+Style/StringConcatenation:
+  Enabled: false
+
+# totally fine for optional env vars
+Style/FetchEnvVar:
+  Enabled: false
+
+# more explicit
+Style/RedundantArgument:
   Enabled: false

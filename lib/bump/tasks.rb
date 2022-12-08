@@ -10,14 +10,11 @@ namespace :bump do
   end
 
   (Bump::Bump::BUMPS + ["current", "file", "show-next"]).each do |bump|
-    if bump == "current"
-      desc "Show current gem version"
-    elsif bump == "show-next"
-      desc "Show next #{Bump::Bump::BUMPS.join('|')} version."
-    elsif bump == "file"
-      desc "Show version file path"
-    else
-      desc "Bump #{bump} part of gem version"
+    case bump
+    when "current" then desc "Show current gem version"
+    when "show-next" then desc "Show next #{Bump::Bump::BUMPS.join('|')} version."
+    when bump == "file" then desc "Show version file path"
+    else desc "Bump #{bump} part of gem version"
     end
 
     task bump, :no_args do |_task, args|

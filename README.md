@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/gregorym/bump.svg)](https://travis-ci.org/gregorym/bump)
 [![Gem Version](https://badge.fury.io/rb/bump.svg)](http://badge.fury.io/rb/bump)
 
 A gem to bump versions of gems and chef-cookbooks.
