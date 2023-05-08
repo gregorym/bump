@@ -79,6 +79,26 @@ describe Bump do
       `git status`.should include "nothing to commit"
     end
 
+    it "should add commit prefix if --commit-prefix flag was given" do
+      write_gemspec
+      `git add #{gemspec}`
+
+      bump("patch --commit-prefix 'Commit prefix.'")
+
+      `git log -1 --pretty=format:'%s'`.should include "Commit prefix."
+      `git status`.should include "nothing to commit"
+    end
+
+    it "should add commit prefix if -p flag was given" do
+      write_gemspec
+      `git add #{gemspec}`
+
+      bump("patch -m 'Commit prefix.'")
+
+      `git log -1 --pretty=format:'%s'`.should include "Commit prefix."
+      `git status`.should include "nothing to commit"
+    end
+
     it "should not commit if --no-commit flag was given" do
       write_gemspec
       `git add #{gemspec}`
