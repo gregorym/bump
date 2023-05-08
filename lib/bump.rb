@@ -209,7 +209,7 @@ module Bump
       end
 
       def commit_message(version, options)
-        prefix = options[:commit_prefix] ? options[commit_prefix] : "#{options[:tag_prefix]}#{version}"
+        prefix = options[:commit_prefix] ? options[:commit_prefix] : "#{options[:tag_prefix]}#{version}"
         options[:commit_message] ? "#{prefix} #{options[:commit_message]}" : tag
       end
 
