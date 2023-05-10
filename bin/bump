@@ -22,8 +22,8 @@ OptionParser.new do |opts|
     Options:
   BANNER
   opts.on("--no-commit", "Do not make a commit.") { options[:commit] = false }
-  opts.on("-m", "--commit-message MSG", String, "Append MSG to the commit message.") { |msg| options[:commit_message] = msg }
-  opts.on("-p", "--commit-prefix PREFIX", String, "Commit message prefix default=TAG") { |msg| options[:commit_prefix] = msg }
+  opts.on("-m", "--commit-message MSG", String, "Append MSG to commit message eg. '<tag> commit message'") { |msg| options[:commit_message] = msg }
+  opts.on("-M", "--custom-commit-message MSG", String, "Custom commit message. Insert tag with {TAG}") { |msg| options[:custom_commit_message] = msg }
   opts.on("--no-bundle", "Do not bundle.") { options[:bundle] = false }
   opts.on("--tag", "Create git tag from version (only if commit is true).") { options[:tag] = true }
   opts.on("--tag-prefix TAG_PREFIX", "Prefix the tag with this string, ex. 'v'") { |tag_prefix| options[:tag_prefix] = tag_prefix }
