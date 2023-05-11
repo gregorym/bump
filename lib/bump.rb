@@ -210,14 +210,10 @@ module Bump
 
       def commit_message(version, options)
         tag = "#{options[:tag_prefix]}#{version}"
+        return tag unless options[:commit_message]
 
-        if options[:commit_message]
-          "#{tag} #{options[:commit_message]}"
-        elsif options[:custom_commit_message]
-          options[:custom_commit_message].gsub('{TAG}', tag)
-        else
-          tag
-        end
+        commit_msg = options[:commit_message]
+        commit_msg.include?('%<tag>') ? commit_msg.gsub('%<tag>', tag) : "#{tag} #{commit_msg}"
       end
 
       def commit(version, options)

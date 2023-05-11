@@ -79,11 +79,11 @@ describe Bump do
       `git status`.should include "nothing to commit"
     end
 
-    it "should add tag to commit message if {TAG} placeholder was in message" do
+    it "should add tag to commit message if %<tag> placeholder was in message" do
       write_gemspec
       `git add #{gemspec}`
 
-      bump("patch -M 'Commit message. {TAG}'")
+      bump("patch -m 'Commit message. %<tag>'")
 
       `git log -1 --pretty=format:'%s'`.should include 'Commit message. v4.2.4'
     end

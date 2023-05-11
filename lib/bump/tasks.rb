@@ -29,7 +29,6 @@ namespace :bump do
         tag_prefix: ENV['TAG_PREFIX'],
         commit: ENV['COMMIT'],
         commit_message: ENV['COMMIT_MESSAGE'],
-        custom_commit_message: ENV['CUSTOM_COMMIT_MESSAGE'],
         bundle: ENV['BUNDLE'],
         increment: ENV['INCREMENT']
       }
