@@ -212,8 +212,7 @@ module Bump
         tag = "#{options[:tag_prefix]}#{version}"
         return tag unless options[:commit_message]
 
-        commit_msg = options[:commit_message]
-        commit_msg.include?('%<tag>') ? commit_msg.gsub('%<tag>', tag) : "#{tag} #{commit_msg}"
+        options[:commit_message].dup.gsub!('%<tag>', tag) || "#{tag} #{commit_msg}"
       end
 
       def commit(version, options)
