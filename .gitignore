@@ -3,3 +3,4 @@
 .rspec
 bin/
 Gemfile.lock
+.tool-versions
