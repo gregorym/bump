@@ -131,7 +131,7 @@ module Bump
         # bundle if needed
         if options[:bundle] && Dir.glob('*.gemspec').any? && under_version_control?("Gemfile.lock")
           bundler_with_clean_env do
-            return ["Bundle error", 1] unless system("bundle")
+            return ["Bundle error", 1] unless system("bundle install")
 
             git_add "Gemfile.lock" if options[:commit]
           end
