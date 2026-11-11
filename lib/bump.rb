@@ -227,7 +227,7 @@ module Bump
 
       def replace(file, old, new)
         content = File.read(file)
-        return unless content.sub!(old, new)
+        return unless content.gsub!(old, new)
 
         File.write(file, content)
       end

@@ -186,7 +186,7 @@ describe Bump do
       read(gemspec).should include('s.version = "4.2.11"')
     end
 
-    it "should not bump multiple versions" do
+    it "bumps all matching versions" do
       version = '"4.2.3"'
       write gemspec, <<-RUBY
         Gem::Specification.new do |s|
@@ -198,7 +198,7 @@ describe Bump do
       RUBY
       bump("patch").should include("4.2.4")
       read(gemspec).should include('s.version = "4.2.4"')
-      read(gemspec).should include("'rake', #{version}")
+      read(gemspec).should include("'rake', \"4.2.4\"")
     end
 
     it "can bump in additional files" do
