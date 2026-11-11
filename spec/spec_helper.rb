@@ -26,7 +26,7 @@ module SpecHelpers
 
   module ClassMethods
     def inside_of_folder(folder)
-      folder = File.expand_path(folder, File.dirname(File.dirname(__FILE__)))
+      folder = File.expand_path(folder, File.dirname(__FILE__, 2))
       around do |example|
         run "rm -rf #{folder} && mkdir #{folder}"
         Dir.chdir folder do

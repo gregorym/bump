@@ -17,7 +17,7 @@ module Bump
     BUMPS         = ["major", "minor", "patch", "pre"].freeze
     PRERELEASE    = ["alpha", "beta", "rc", nil].freeze
     OPTIONS       = BUMPS | ["set", "current", "file"]
-    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/.freeze
+    VERSION_REGEX = /(\d+\.\d+\.\d+(?:-(?:#{PRERELEASE.compact.join('|')}))?)/
 
     class << self
       def defaults
@@ -162,12 +162,12 @@ module Bump
         system "#{editor} #{log}"
       end
 
-      def bundler_with_clean_env(&block)
+      def bundler_with_clean_env(&)
         if defined?(Bundler)
           if Bundler.respond_to?(:with_unbundled_env)
-            Bundler.with_unbundled_env(&block)
+            Bundler.with_unbundled_env(&)
           else
-            Bundler.with_clean_env(&block)
+            Bundler.with_clean_env(&)
           end
         else
           yield

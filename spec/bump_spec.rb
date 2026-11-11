@@ -719,11 +719,11 @@ describe Bump do
     File.unlink file
   end
 
-  def bundler_with_clean_env(&block)
+  def bundler_with_clean_env(&)
     if Bundler.respond_to?(:with_unbundled_env)
-      Bundler.with_unbundled_env(&block)
+      Bundler.with_unbundled_env(&)
     else
-      Bundler.with_clean_env(&block)
+      Bundler.with_clean_env(&)
     end
   end
 end
